@@ -5,6 +5,7 @@
 #include <QThread>
 #include <QTcpSocket>
 #include <QDataStream>
+#include "packet.h"
 
 class ClientThread : public QThread
 {

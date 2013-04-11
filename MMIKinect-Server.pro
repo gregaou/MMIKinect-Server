@@ -18,9 +18,11 @@ TEMPLATE = app
 SOURCES += main.cpp \
     server.cpp \
     message.cpp \
-    clientthread.cpp
+    clientthread.cpp \
+    packet.cpp
 
 HEADERS += \
     server.h \
     message.h \
-    clientthread.h
+    clientthread.h \
+    packet.h
