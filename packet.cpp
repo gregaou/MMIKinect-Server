@@ -1,29 +1,61 @@
 #include "packet.h"
 
-Packet::Packet(QIODevice *d) : _pData(0), _pStream(new QDataStream(d)) {
+Packet::Packet(QIODevice *d) : _type(0xff), _bodySize(0), _pData(0), _pStream(new QDataStream(d)) {}
+
+uchar Packet::getType() {
+    if (_type == 0xFF) { doReadHeader(); }
+    return _type;
 }
 
 uint Packet::getBodySize() {
-	uint res;
-	memcpy(&res,_pData->mid(1, 4).data(),sizeof(int));
-	res = qFromBigEndian(res);
-	return res;
+    if (_bodySize == 0) { doReadHeader(); }
+    return _bodySize;
 }
 
 QByteArray* Packet::getData() {
-		if(!_pData) {
-				_pData = new QByteArray();
-				readBuffer(_pData, getHeaderSize());
-				if(getBodySize() != 0)
-						readBuffer(_pData, getBodySize());
-		}
-		return _pData;
+    if(!_pData) { doReadData(); }
+    return _pData;
 }
 
-void Packet::readBuffer(QByteArray *data, int length) {
+Packet* Packet::setType(uchar type) {
+    _type = type;
+    return this;
+}
+
+Packet* Packet::setBodySize(uint size) {
+    _bodySize = size;
+    return this;
+}
+
+Packet* Packet::setData(QByteArray* data) {
+    _pData = data;
+    setBodySize(_pData->size());
+    return this;
+}
+
+Packet* Packet::doReadHeader() {
+    QByteArray *buffer = new QByteArray();
+    doReadStream(buffer,_headerSize);
+
+    setType(buffer->at(0));
+    uint size;
+    memcpy(&size,buffer->mid(1,4).data(),sizeof(uint));
+    setBodySize(qFromBigEndian(size));
+
+    delete(buffer);
+    return this;
+}
+
+Packet* Packet::doReadData () {
+    _pData = new QByteArray();
+    doReadStream(_pData, getBodySize());
+    return this;
+}
+
+Packet* Packet::doReadStream(QByteArray *data, int length) {
 		int n = 0, r;
 		if(!_pStream->device()->canReadLine())
-				qDebug() << "The stream cannot read";
+                qDebug() << "The stream cannot be read";
 
 		while(n < length) {
 				char buffer[length - n];
@@ -31,4 +63,5 @@ void Packet::readBuffer(QByteArray *data, int length) {
 				n += r;
 				data->append(buffer, r);
 		}
+        return this;
 }
