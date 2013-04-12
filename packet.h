@@ -2,6 +2,7 @@
 #define PACKET_H
 
 #include <QDataStream>
+#include <QTcpSocket>
 #include <QtEndian>
 #include <QDebug>
 
@@ -13,7 +14,7 @@ public:
      * @brief Créer un Objet Packet
      * @param d Un Stream qui lit/ecrit le Packet
      */
-    Packet(QIODevice *d);
+    Packet(QTcpSocket *d);
 
     /**
      * @brief Retourne le type de message
@@ -86,7 +87,7 @@ private:
     static const int _headerSize = 5;
     uint _bodySize;
     QByteArray *_pData;
-    QDataStream *_pStream;
+    QTcpSocket *_pSocket;
 
 };
 

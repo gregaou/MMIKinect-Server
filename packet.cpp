@@ -1,6 +1,6 @@
 #include "packet.h"
 
-Packet::Packet(QIODevice *d) : _type(0xff), _bodySize(0), _pData(0), _pStream(new QDataStream(d)) {}
+Packet::Packet(QTcpSocket *d) : _type(0xff), _bodySize(0), _pData(0), _pSocket(d) {}
 
 uchar Packet::getType() {
     if (_type == 0xFF) { doReadHeader(); }
@@ -48,29 +48,41 @@ Packet* Packet::doReadHeader() {
 
 Packet* Packet::doReadData () {
     _pData = new QByteArray();
-    doReadStream(_pData, getBodySize());
+    uint length = getBodySize();
+    qDebug() << "Reading data. Length : " << length;
+    doReadStream(_pData, length);
     return this;
 }
 
 Packet* Packet::doReadStream(QByteArray *data, int length) {
-		int n = 0, r;
-		while(n < length) {
-				char buffer[length - n];
-				r = _pStream->readRawData(buffer, length - n);
-				n += r;
-				data->append(buffer, r);
-		}
-        return this;
+    qDebug() << "Reading Stream : " << length;
+    int n = 0, r;
+    while(n < length) {
+        char array[length - n];
+        if (!_pSocket->waitForReadyRead()) {
+            qDebug() << "No data received." << _pSocket->errorString();
+            exit(1);
+        }
+        r = _pSocket->read(array, length - n);
+        if (r == -1) {
+            qDebug() << "Reading error." << _pSocket->errorString();
+            exit(1);
+        }
+        n += r;
+        qDebug() << n <<" octets lus.";
+        data->append(array,r);
+    }
+    return this;
 }
 
 Packet* Packet::doSend () {
-    QByteArray *msg = new QByteArray();
-    msg->append(getType());
+    QByteArray msg;
+    msg.append(getType());
     char size[sizeof(uint)];
     uint value = qToLittleEndian(getBodySize());
     memcpy(size,&value,sizeof(uint));
-    msg->append(size,sizeof(uint));
-    msg->append(*getData());
-    _pStream->writeRawData(msg->data(), msg->size());
+    msg.append(size,sizeof(uint));
+    msg.append(*getData());
+    _pSocket->write(msg);
     return this;
 }

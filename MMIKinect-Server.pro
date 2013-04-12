@@ -6,7 +6,7 @@
 
 QT       += core network
 
-QT       += gui
+QT       -= gui
 
 TARGET = MMIKinect-Server
 CONFIG   += console

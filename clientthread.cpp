@@ -1,4 +1,8 @@
 #include "clientthread.h"
+#include <sstream>
+#include <fstream>
+
+using namespace std;
 
 ClientThread::ClientThread(int socketDescriptor, QObject *parent) :
     QThread(parent), _socketDescriptor(socketDescriptor)
@@ -18,20 +22,30 @@ void ClientThread::run()
         return;
     }
 
-    connect(_pTcpSocket,SIGNAL(readyRead()),this,SLOT(readyRead()),Qt::DirectConnection);
-    connect(_pTcpSocket,SIGNAL(disconnected()),this,SLOT(disconnected()),Qt::DirectConnection);
+    connect(_pTcpSocket,SIGNAL(readyRead()),this,SLOT(readyRead()), Qt::DirectConnection);
+    connect(_pTcpSocket,SIGNAL(disconnected()),this,SLOT(disconnected()), Qt::DirectConnection);
 
     qDebug() << _socketDescriptor << " Client Connected";
 
     exec();
 }
 
+int ClientThread::getSafeNumber () {
+    return num ++;
+}
+
 void ClientThread::readyRead()
 {
-    Packet *p = new Packet(_pTcpSocket);
-    qDebug() << _socketDescriptor << " Data in: " << p->getData();
-    QImage img = QImage::fromData(*p->getData());
-    img.save(QString("test") + QString::number(num++) + ".jpeg");
+    //mutex.lock();
+    qDebug() << "Creating packet";
+    Packet p(_pTcpSocket);
+    qDebug() << "Saving file";
+    ostringstream filename;
+    filename << "File" << getSafeNumber() << ".jpeg";
+    ofstream file(filename.str().c_str(),ios::out);
+    file.write(p.getData()->data(),p.getData()->size());
+    qDebug() << "File saved!";
+    //mutex.unlock();
 }
 
 void ClientThread::disconnected()

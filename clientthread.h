@@ -5,7 +5,8 @@
 #include <QThread>
 #include <QTcpSocket>
 #include <QDataStream>
-#include <QImage>
+#include <QMutex>
+
 #include "packet.h"
 
 class ClientThread : public QThread
@@ -22,6 +23,9 @@ private:
 	int _socketDescriptor;
 	QTcpSocket* _pTcpSocket;
     int num;
+    //QMutex mutex;
+
+    int getSafeNumber ();
 
 private slots:
 	void readyRead();
