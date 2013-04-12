@@ -27,10 +27,10 @@ void ClientThread::run()
 
 void ClientThread::readyRead()
 {
-    //QByteArray Data = _pTcpSocket->readAll();
-    Packet *p = new Packet(_pTcpSocket);
-    qDebug() << _socketDescriptor << " Data in: " << p->getData();
-    _pTcpSocket->write(*p->getData());
+		//QByteArray Data = _pTcpSocket->readAll();
+		Packet *p = new Packet(_pTcpSocket);
+		qDebug() << _socketDescriptor << " Data in: " << p->getData();
+		//_pTcpSocket->write(*p->getData());
 }
 
 void ClientThread::disconnected()
