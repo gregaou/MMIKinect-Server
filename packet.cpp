@@ -54,9 +54,6 @@ Packet* Packet::doReadData () {
 
 Packet* Packet::doReadStream(QByteArray *data, int length) {
 		int n = 0, r;
-		if(!_pStream->device()->canReadLine())
-                qDebug() << "Cannot read stream";
-
 		while(n < length) {
 				char buffer[length - n];
 				r = _pStream->readRawData(buffer, length - n);

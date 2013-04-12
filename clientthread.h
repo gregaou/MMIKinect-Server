@@ -5,6 +5,7 @@
 #include <QThread>
 #include <QTcpSocket>
 #include <QDataStream>
+#include <QImage>
 #include "packet.h"
 
 class ClientThread : public QThread
@@ -20,6 +21,7 @@ signals:
 private:
 	int _socketDescriptor;
 	QTcpSocket* _pTcpSocket;
+    int num;
 
 private slots:
 	void readyRead();
