@@ -29,8 +29,10 @@ void ClientThread::readyRead()
 {
 		//QByteArray Data = _pTcpSocket->readAll();
         Packet *p = new Packet(_pTcpSocket);
-        qDebug() << _socketDescriptor << " Data in: " << p->getData();
-        p->doSend();
+        qDebug() << _socketDescriptor << " Data in: " << QString::fromUtf8(p->getData()->data());
+        QString *str = new QString("Greg, C'est toi la pute!");
+        QByteArray array = str->toUtf8();
+        p->setData(&array)->doSend();
 		//_pTcpSocket->write(*p->getData());
 }
 

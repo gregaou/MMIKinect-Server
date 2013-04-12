@@ -2,7 +2,10 @@
 
 Server::Server(QObject *parent) :
 	QTcpServer(parent) {
-	listen(QHostAddress::Any,1337);
+    if (!listen(QHostAddress::Any,1337)) {
+        qDebug() << "Unable to bind port.";
+        exit(1);
+    }
 }
 
 void Server::incomingConnection(qintptr socketDescriptor)

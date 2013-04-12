@@ -40,7 +40,7 @@ Packet* Packet::doReadHeader() {
     setType(buffer->at(0));
     uint size;
     memcpy(&size,buffer->mid(1,4).data(),sizeof(uint));
-    setBodySize(qFromBigEndian(size));
+    setBodySize(size);
 
     delete(buffer);
     return this;
@@ -69,7 +69,10 @@ Packet* Packet::doReadStream(QByteArray *data, int length) {
 Packet* Packet::doSend () {
     QByteArray *msg = new QByteArray();
     msg->append(getType());
-    msg->append(qToLittleEndian(getBodySize()));
+    char size[sizeof(uint)];
+    uint value = qToLittleEndian(getBodySize());
+    memcpy(size,&value,sizeof(uint));
+    msg->append(size,sizeof(uint));
     msg->append(*getData());
     _pStream->writeRawData(msg->data(), msg->size());
     return this;
