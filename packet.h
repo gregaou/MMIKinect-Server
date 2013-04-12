@@ -41,6 +41,12 @@ public:
      */
     Packet* setData(QByteArray* data);
 
+    /**
+     * @brief Envoie le packet correctement formaté
+     * @return Le packet d'origine
+     */
+    Packet* doSend ();
+
 private:
 
     /**
@@ -72,7 +78,7 @@ private:
      * @brief Lis les données du Stream et les écris dans le buffer
      * @param data le QByteArray utilisé comme buffer
      * @param length la longueur des données lue (en octet).
-     * @return
+     * @return le packet d'origine
      */
     Packet* doReadStream(QByteArray *data, int length);
 
