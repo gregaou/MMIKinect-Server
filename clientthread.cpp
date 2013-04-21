@@ -1,9 +1,5 @@
 #include "clientthread.h"
-#include <iostream>
-#include <sstream>
-//#include <ostream>
 #include <fstream>
-#include <stdexcept>
 
 #include "packet.h"
 #include "facetracking.h"
