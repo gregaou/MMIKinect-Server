@@ -1,16 +1,32 @@
 #include "server.h"
 
-Server::Server(QObject *parent) :
-	QTcpServer(parent) {
-    if (!listen(QHostAddress::Any,1337)) {
-        qDebug() << "Unable to bind port.";
-        exit(1);
-    }
+Server::Server() : _pSocket(0) {
+	displayMessage("Creating ...");
 }
 
-void Server::incomingConnection(qintptr socketDescriptor)
-{
-		ClientThread *thread = new ClientThread(socketDescriptor, this);
-		connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-		thread->start();
+Server::~Server() {
+	if(!_pSocket) delete _pSocket;
 }
+
+Server* Server::doWork() {
+	_pSocket = new TcpSocketServer();
+	while(1) {
+		try {
+			int socketDescriptor = _pSocket->doAccept();
+			ClientThread *ct = new ClientThread(socketDescriptor);
+			ct->start();
+		}
+		catch (NetworkException e)
+		{
+			displayMessage(e.what());
+			break;
+		}
+	}
+	return this;
+}
+
+Server* Server::displayMessage(std::string msg) {
+	std::cout << "Server : " << msg << std::endl;
+	return this;
+}
+

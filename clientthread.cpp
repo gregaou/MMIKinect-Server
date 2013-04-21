@@ -1,57 +1,46 @@
 #include "clientthread.h"
+#include <iostream>
 #include <sstream>
+//#include <ostream>
 #include <fstream>
+#include <stdexcept>
 
-using namespace std;
+#include "packet.h"
+#include "facetracking.h"
 
-ClientThread::ClientThread(int socketDescriptor, QObject *parent) :
-    QThread(parent), _socketDescriptor(socketDescriptor)
-{
-    num = 0;
-}
+ClientThread::ClientThread(int socketDescriptor) :
+	QThread(), _socketDescriptor(socketDescriptor)
+{}
 
 
 void ClientThread::run()
 {
-    //thread starts here
-    qDebug() << _socketDescriptor << " Starting thread";
-    _pTcpSocket = new QTcpSocket();
-    if(!_pTcpSocket->setSocketDescriptor(_socketDescriptor))
-    {
-        emit error(_pTcpSocket->error());
-        return;
-    }
-
-    connect(_pTcpSocket,SIGNAL(readyRead()),this,SLOT(readyRead()), Qt::DirectConnection);
-    connect(_pTcpSocket,SIGNAL(disconnected()),this,SLOT(disconnected()), Qt::DirectConnection);
-
-    qDebug() << _socketDescriptor << " Client Connected";
-
-    exec();
+	displayMessage("Client connected");
+	int num=0;
+	while(1)
+	{
+		try {
+			displayMessage("Creating packet");
+			Packet p(_socketDescriptor);
+			displayMessage("Saving file");
+			std::ostringstream filename;
+			filename << "File" << num++ << ".jpg";
+			std::ofstream file(filename.str().c_str(),std::ios::out);
+			file.write((const char*)p.getData(),p.getBodySize());
+			displayMessage("File saved!");
+			FaceTracking ft;
+			ft.getFacesFromImage(filename.str().c_str());
+		} catch(NetworkException e) {
+			displayMessage(e.what());
+			displayMessage("Disconnected");
+			close(_socketDescriptor);
+			break;
+		}
+	}
 }
 
-int ClientThread::getSafeNumber () {
-    return num ++;
-}
-
-void ClientThread::readyRead()
-{
-    //mutex.lock();
-    qDebug() << "Creating packet";
-    Packet p(_pTcpSocket);
-    qDebug() << "Saving file";
-    ostringstream filename;
-    filename << "File" << getSafeNumber() << ".jpeg";
-    ofstream file(filename.str().c_str(),ios::out);
-    file.write(p.getData()->data(),p.getData()->size());
-    qDebug() << "File saved!";
-    //mutex.unlock();
-}
-
-void ClientThread::disconnected()
-{
-    qDebug() << _socketDescriptor << " Disconnected";
-
-    _pTcpSocket->deleteLater();
-    exit(0);
+ClientThread* ClientThread::displayMessage(std::string msg) {
+	std::cout << "Client(" << _socketDescriptor << ")" << " : " << msg <<
+							 std::endl;
+	return this;
 }

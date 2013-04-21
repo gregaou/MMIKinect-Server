@@ -1,28 +1,30 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2013-04-10T20:06:42
-#
-#-------------------------------------------------
-
-QT       += core network
-
-QT       -= gui
-
-TARGET = MMIKinect-Server
-CONFIG   += console
-CONFIG   -= app_bundle
-
 TEMPLATE = app
-
+CONFIG += console qt
+CONFIG -= app_bundle
 
 SOURCES += main.cpp \
     server.cpp \
-    message.cpp \
+    tcpsocket.cpp \
+    tcpsocketserver.cpp \
     clientthread.cpp \
-    packet.cpp
+    packet.cpp \
+    facetracking.cpp
 
 HEADERS += \
     server.h \
-    message.h \
+    tcpsocket.h \
+    networkexception.h \
+    tcpsocketserver.h \
     clientthread.h \
-    packet.h
+    packet.h \
+    typedef.h \
+    facetracking.h \
+    singleton.h \
+    point2D.h \
+    rect.h
+
+unix: CONFIG += link_pkgconfig
+unix: PKGCONFIG += opencv
+
+RESOURCES +=
+

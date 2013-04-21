@@ -1,22 +1,20 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <QTcpServer>
+#include "tcpsocketserver.h"
 #include "clientthread.h"
 
-class Server : public QTcpServer
+class Server
 {
-	Q_OBJECT
 public:
-	Server(QObject *parent = 0);
+	Server();
+	~Server();
+	Server* doWork();
 
-protected:
-		void incomingConnection(qintptr socketDescriptor);
-
-signals:
-
-public slots:
-
+private:
+	static Server instance;
+	TcpSocketServer* _pSocket;
+	Server* displayMessage(std::string msg);
 };
 
 #endif // SERVER_H
