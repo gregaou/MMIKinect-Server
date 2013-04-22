@@ -3,6 +3,8 @@
 
 #include <QThread>
 
+#include "logger.h"
+
 class ClientThread : public QThread
 {
 	Q_OBJECT
@@ -13,7 +15,7 @@ public:
 private:
 	int _socketDescriptor;
 
-	ClientThread* displayMessage(std::string msg);
+    ClientThread* displayMessage(std::string msg, int type);
 
 };
 

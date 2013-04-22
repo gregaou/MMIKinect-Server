@@ -3,6 +3,7 @@
 
 #include "tcpsocketserver.h"
 #include "clientthread.h"
+#include "logger.h"
 
 class Server
 {
@@ -14,7 +15,7 @@ public:
 private:
 	static Server instance;
 	TcpSocketServer* _pSocket;
-	Server* displayMessage(std::string msg);
+    Server* displayMessage(std::string msg, int type);
 };
 
 #endif // SERVER_H

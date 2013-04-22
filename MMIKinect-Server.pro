@@ -8,7 +8,8 @@ SOURCES += main.cpp \
     tcpsocketserver.cpp \
     clientthread.cpp \
     packet.cpp \
-    facetracking.cpp
+    facetracking.cpp \
+    logger.cpp
 
 HEADERS += \
     server.h \
@@ -21,7 +22,8 @@ HEADERS += \
     facetracking.h \
     singleton.h \
     point2D.h \
-    rect.h
+    rect.h \
+    logger.h
 
 unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += opencv

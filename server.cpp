@@ -1,7 +1,7 @@
 #include "server.h"
 
 Server::Server() : _pSocket(0) {
-	displayMessage("Creating ...");
+    displayMessage("Creating...", Logger::INFO);
 }
 
 Server::~Server() {
@@ -18,15 +18,17 @@ Server* Server::doWork() {
 		}
 		catch (NetworkException e)
 		{
-			displayMessage(e.what());
+            displayMessage(e.what(), Logger::ERROR);
 			break;
 		}
 	}
 	return this;
 }
 
-Server* Server::displayMessage(std::string msg) {
-	std::cout << "Server : " << msg << std::endl;
-	return this;
+Server* Server::displayMessage(std::string msg, int type) {
+    std::ostringstream message;
+    message << "Server : " << msg;
+    Logger::getLogger()->message(message.str(), type);
+    return this;
 }
 
