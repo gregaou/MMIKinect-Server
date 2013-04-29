@@ -17,7 +17,7 @@ public:
 	NetworkException(const char * msg, int code) : _code(code)
 	{
 		std::ostringstream oss;
-		oss << "Exception : " << msg << " . Code :"
+		oss << "Exception : " << msg << ". Code : "
 				<< code;
 		_msg = oss.str();
 	}

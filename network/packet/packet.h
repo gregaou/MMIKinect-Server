@@ -1,11 +1,15 @@
 #ifndef PACKET_H
 #define PACKET_H
 
+#include <string>
+#include <sstream>
 #include <vector>
 
 #include "typedef.h"
 #include "logger.h"
 #include "tcpsocket.h"
+
+#define PACKET_VERSION 0x01
 
 enum PacketType {
 	UNDEFINED_TYPE = 0x00,
@@ -46,10 +50,22 @@ public:
 	Packet(int socketDescriptor);
 
 	/**
+	 * @brief Retourne la version de la trame
+	 * @return un byte correspondant à la version de la trame
+	 */
+	byte getVersion();
+
+	/**
 		 * @brief Retourne le type de message
 		 * @return un uchar correspodant au type de message
 		 */
 	PacketType getType();
+
+	/**
+	 * @brief Retourne l'identifiant de la trame
+	 * @return un id (unsigned short int) correspondant au type de message
+	 */
+	id getId();
 
 	/**
 		 * @brief Retourne les données du packet
@@ -58,11 +74,25 @@ public:
 	byte *getData();
 
 	/**
+	 * @brief Défini la version du packet
+	 * @param version un byte correspondant à la version du packet
+	 * @return Le packet d'origine
+	 */
+	Packet* setVersion(byte version);
+
+	/**
 		 * @brief Défini le type du packet
 		 * @param type un uchar correspondant à un type de message
 		 * @return Le packet d'origine
 		 */
 	Packet* setType(PacketType type);
+
+	/**
+	 * @brief Défini l'identifiant du packet
+	 * @param identifiant un id correspondant à l'identifiant du message
+	 * @return Le packet d'origine
+	 */
+	Packet* setId(id identifiant);
 
 	/**
 		 * @brief Défini les données du packet
@@ -93,10 +123,17 @@ private:
 	Packet* setBodySize(uint size);
 
 	/**
-		 * @brief Lis et rempli les champs 'type' et 'bodySize'
+	 * @brief Lis et rempli le champ 'version'
+	 * @return le packet d'origine
+	 */
+	Packet* doReadVersion();
+
+	/**
+		 * @brief Lis et rempli les champs 'type' , 'id' et 'bodySize'
 		 * @return le packet d'origine
+		 * @throw NetworkException une exception lorsque la version n'est pas correcte.
 		 */
-	Packet* doReadHeader();
+	Packet* doReadHeader() throw (NetworkException);
 
 	/**
 		 * @brief Lis et rempli les données
@@ -112,9 +149,11 @@ private:
 		 */
 	//Packet* doReadStream(std::vector<byte>* data, int length);
 
+	byte _version;
 	PacketType _type;
-	static const int _headerSize = 5;
+	id _id;
 	uint _bodySize;
+	static const int _headerSize = 8;
 	std::vector<byte>* _pData;
 	TcpSocket _pSocket;
 };
