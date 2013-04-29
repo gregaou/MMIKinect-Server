@@ -1,32 +1,16 @@
-TEMPLATE = app
-CONFIG += console qt
-CONFIG -= app_bundle
+TEMPLATE = subdirs
 
-SOURCES += main.cpp \
-    server.cpp \
-    tcpsocket.cpp \
-    tcpsocketserver.cpp \
-    clientthread.cpp \
-    packet.cpp \
-    facetracking.cpp \
-    logger.cpp
+CONFIG += ordered
 
-HEADERS += \
-    server.h \
-    tcpsocket.h \
-    networkexception.h \
-    tcpsocketserver.h \
-    clientthread.h \
-    packet.h \
-    typedef.h \
-    facetracking.h \
-    singleton.h \
-    point2D.h \
-    rect.h \
-    logger.h
+SUBDIRS = \
+	tools \
+	network \
+	module \
+	app \
+	dummymodule
 
-unix: CONFIG += link_pkgconfig
-unix: PKGCONFIG += opencv
+network.depends = tools
+module.depends = network tools
+app.depends = module network tools
 
-RESOURCES +=
-
+dummymodule.depends = module network tools

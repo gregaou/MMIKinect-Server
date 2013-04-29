@@ -1,22 +1,17 @@
 #ifndef CLIENTTHREAD_H
 #define CLIENTTHREAD_H
 
-#include <QThread>
+#include "thread.h"
+#include "server.h"
+#include "packet/packet.h"
 
-#include "logger.h"
-
-class ClientThread : public QThread
-{
-	Q_OBJECT
+class ClientThread : public Thread {
 public:
 	ClientThread(int socketDescriptor);
 	void run();
 
 private:
 	int _socketDescriptor;
-
-    ClientThread* displayMessage(std::string msg, int type);
-
 };
 
 #endif // CLIENTTHREAD_H

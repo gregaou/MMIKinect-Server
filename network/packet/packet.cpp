@@ -1,12 +1,12 @@
 #include "packet.h"
 
-Packet::Packet(int socketDescriptor): _type(0xff), _bodySize(0), _pData(0)
+Packet::Packet(int socketDescriptor): _type(UNDEFINED_TYPE), _bodySize(0), _pData(0)
 {
 	_pSocket.setSocket(socketDescriptor);
 }
 
-byte Packet::getType() {
-	if (_type == 0xFF) { doReadHeader(); }
+PacketType Packet::getType(){
+	if (_type == UNDEFINED_TYPE) { doReadHeader(); }
 	return _type;
 }
 
@@ -20,7 +20,7 @@ byte* Packet::getData() {
 	return (byte*)_pData->data();
 }
 
-Packet* Packet::setType(byte type) {
+Packet* Packet::setType(PacketType type) {
 	_type = type;
 	return this;
 }
@@ -39,7 +39,7 @@ Packet* Packet::setData(std::vector<byte>* data) {
 Packet* Packet::doReadHeader() {
 	byte buffer[_headerSize];
 	_pSocket.readBuffer(buffer,_headerSize);
-	setType(buffer[0]);
+	setType((PacketType)buffer[0]);
 
 	uint size;
 	memcpy(&size,&buffer[1],sizeof(uint));
@@ -51,7 +51,7 @@ Packet* Packet::doReadHeader() {
 Packet* Packet::doReadData () {
 	_pData = new std::vector<byte>();
 	uint length = getBodySize();
-	std::cout << "Reading data. Length : " << length << std::endl;
+	io::dbg << "Reading data. Length : " << length << io::endl;
 	_pData->resize(length);
 	_pSocket.readBuffer(_pData->data(), length);
 	return this;
