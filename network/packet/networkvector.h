@@ -4,12 +4,12 @@
 #include <vector>
 
 #include "inetworkmessage.h"
-#include "person.h"
 
-class NetworkVector : public std::vector<INetworkMessage>, public INetworkMessage
+template <class T>
+class NetworkVector : public std::vector<T>, public INetworkMessage
 {
 public:
-	NetworkVector() : std::vector<INetworkMessage>(), INetworkMessage() {}
+	NetworkVector() : std::vector<T>(), INetworkMessage() {}
 
 	uint8* toNetworkMessage () {
 		if (!_data) {
@@ -18,8 +18,8 @@ public:
 			uint8 size = (uint8) this->size();
 			memcpy(index, &size, sizeof(uint8)); index += sizeof(uint8);
 			for (uint32 i = 0; i < this->size(); i++) {
-				memcpy(index, at(i).toNetworkMessage(), at(i).getNetworkMessageSize());
-				index += at(i).getNetworkMessageSize();
+				memcpy(index, this->at(i).toNetworkMessage(), this->at(i).getNetworkMessageSize());
+				index += this->at(i).getNetworkMessageSize();
 			}
 		}
 		return _data;
@@ -28,8 +28,8 @@ public:
 	int getNetworkMessageSize () {
 		if (!_size) {
 			_size = sizeof(uint8);
-			for (uint32 i = 0; i < size(); i++) {
-				_size += at(i).getNetworkMessageSize();
+			for (uint32 i = 0; i < this->size(); i++) {
+				_size += this->at(i).getNetworkMessageSize();
 			}
 		}
 		return _size;

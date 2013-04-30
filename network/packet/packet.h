@@ -50,6 +50,12 @@ public:
 	Packet(int socketDescriptor);
 
 	/**
+	 * @brief Créé une copie d'un Packet
+	 * @param p le Packet à copier
+	 */
+	Packet(Packet* p);
+
+	/**
 	 * @brief Retourne la version de la trame
 	 * @return un uint8 correspondant à la version de la trame
 	 */

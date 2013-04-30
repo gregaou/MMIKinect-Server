@@ -5,11 +5,18 @@
 
 #include "typedef.h"
 #include "inetworkmessage.h"
+#include "networkvector.h"
 
 class Person : public INetworkMessage
 {
 public:
 	Person(std::string id) : _id(id) {}
+	Person(uint8* data, int size) {
+		std::string id((char*)data, size);
+		_id = id;
+	}
+
+	std::string getId () { return _id; }
 
 	uint8* toNetworkMessage () {
 		if (!_data) {
@@ -24,7 +31,7 @@ public:
 
 	int getNetworkMessageSize () {
 		if (!_size) {
-			_size = sizeof(uint8) + _id.size();
+			_size = sizeof(uint16) + _id.size();
 		}
 		return _size;
 	}
@@ -32,5 +39,7 @@ public:
 private :
 	std::string _id;
 };
+
+typedef NetworkVector<Person> PeopleVector;
 
 #endif // PERSON_H

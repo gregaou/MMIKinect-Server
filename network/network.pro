@@ -13,7 +13,8 @@ CONFIG += staticlib
 SOURCES += \
     tcpsocketserver.cpp \
     tcpsocket.cpp \
-    packet/packet.cpp
+    packet/packet.cpp \
+    packet/trainpacket.cpp
 
 HEADERS += \
     tcpsocketserver.h \
@@ -23,7 +24,8 @@ HEADERS += \
     packet/person.h \
     packet/packet.h \
     packet/networkvector.h \
-    packet/inetworkmessage.h
+    packet/inetworkmessage.h \
+    packet/trainpacket.h
 
 INCLUDEPATH += ../tools/
 

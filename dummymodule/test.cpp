@@ -9,8 +9,8 @@ extern "C" void destroy (IModule* module) {
 }
 
 void Test::onNewPacket(Packet *p)  {
-	if (!p) { io::warn << "Empty packet!" << io::endl; }
+	if (!p) { io::warn << "Dummy Module : Empty packet!" << io::endl; }
 	else {
-		io::info << "Packet received!" << io::endl;
+		io::dbg << "Dummy Module : Packet received!" << io::endl;
 	}
 }

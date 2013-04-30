@@ -6,6 +6,7 @@
 
 #include "typedef.h"
 #include "inetworkmessage.h"
+#include "networkvector.h"
 #include "person.h"
 
 class Score : public INetworkMessage
@@ -41,5 +42,7 @@ private:
 	Person _person;
 	double _score;
 };
+
+typedef NetworkVector<Score> ScoringVector;
 
 #endif // SCORE_H

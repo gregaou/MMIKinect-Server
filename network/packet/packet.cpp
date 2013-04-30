@@ -1,5 +1,13 @@
 #include "packet.h"
 
+Packet::Packet(Packet* p) {
+	_pSocket = p->_pSocket;
+	setVersion(p->getVersion());
+	setType(p->getType());
+	setId(p->getId());
+	setData(p->_pData);
+}
+
 Packet::Packet(int socketDescriptor): _version(0x00), _type(UNDEFINED_TYPE), _id(0), _bodySize(0), _pData(0)
 {
 	_pSocket.setSocket(socketDescriptor);
@@ -51,6 +59,7 @@ Packet* Packet::setBodySize(uint32 size) {
 }
 
 Packet* Packet::setData(std::vector<uint8>* data) {
+	if (!data) { data = new std::vector<uint8>(); }
 	_pData = data;
 	setBodySize(_pData->size());
 	return this;
