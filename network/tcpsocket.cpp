@@ -12,7 +12,7 @@ TcpSocket::~TcpSocket()
 //		closesocket(_sock);
 }
 
-void TcpSocket::writeBuffer(const byte* buffer, size_t len)
+void TcpSocket::writeBuffer(const uint8* buffer, size_t len)
 {
 	int r;
 	r = send(_sock, (const char*)buffer, len, 0);
@@ -28,7 +28,7 @@ void TcpSocket::writeBuffer(const byte* buffer, size_t len)
 	if (r < (int)len) throw NetworkException("Paquet partially send", -1);
 }
 
-void TcpSocket::readBuffer(byte* buffer, size_t len)
+void TcpSocket::readBuffer(uint8* buffer, size_t len)
 {
 	int r;
 	fd_set set;

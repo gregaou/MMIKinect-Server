@@ -23,8 +23,8 @@ public:
 	TcpSocket();
 	virtual ~TcpSocket();
 
-	virtual void writeBuffer(const byte* buffer, size_t len);
-	virtual void readBuffer(byte* buffer, size_t len);
+	virtual void writeBuffer(const uint8* buffer, size_t len);
+	virtual void readBuffer(uint8* buffer, size_t len);
 
 	virtual TcpSocket* setPort(int port);
 	virtual TcpSocket* setSocket(int sock);

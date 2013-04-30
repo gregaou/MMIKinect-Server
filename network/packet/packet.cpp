@@ -5,59 +5,59 @@ Packet::Packet(int socketDescriptor): _version(0x00), _type(UNDEFINED_TYPE), _id
 	_pSocket.setSocket(socketDescriptor);
 }
 
-byte Packet::getVersion(){
+uint8 Packet::getVersion(){
 	if (!_version) { doReadVersion(); }
 	return _version;
 }
 
-PacketType Packet::getType(){
+uint8 Packet::getType(){
 	if (_type == UNDEFINED_TYPE) { doReadHeader(); }
 	return _type;
 }
 
-id Packet::getId(){
+uint16 Packet::getId(){
 	if (!_id) { doReadHeader(); }
 	return _id;
 }
 
-uint Packet::getBodySize() {
+uint32 Packet::getBodySize() {
 	if (_bodySize == 0) { doReadHeader(); }
 	return _bodySize;
 }
 
-byte* Packet::getData() {
+uint8* Packet::getData() {
 	if(!_pData) { doReadData(); }
-	return (byte*)_pData->data();
+	return (uint8*)_pData->data();
 }
 
-Packet* Packet::setVersion(byte version) {
+Packet* Packet::setVersion(uint8 version) {
 	_version = version;
 	return this;
 }
 
-Packet* Packet::setType(PacketType type) {
+Packet* Packet::setType(uint8 type) {
 	_type = type;
 	return this;
 }
 
-Packet* Packet::setId(id identifiant) {
+Packet* Packet::setId(uint16 identifiant) {
 	_id = identifiant;
 	return this;
 }
 
-Packet* Packet::setBodySize(uint size) {
+Packet* Packet::setBodySize(uint32 size) {
 	_bodySize = size;
 	return this;
 }
 
-Packet* Packet::setData(std::vector<byte>* data) {
+Packet* Packet::setData(std::vector<uint8>* data) {
 	_pData = data;
 	setBodySize(_pData->size());
 	return this;
 }
 
 Packet* Packet::doReadVersion() {
-	byte version;
+	uint8 version;
 	_pSocket.readBuffer(&version,1);
 	setVersion(version);
 
@@ -68,29 +68,29 @@ Packet* Packet::doReadHeader() throw (NetworkException){
 	if (getVersion() != PACKET_VERSION) {
 		std::stringstream msg;
 		msg << "Wrong packet version : "
-				<< ((uint)getVersion()) << " given, "
+				<< ((uint32)getVersion()) << " given, "
 				<< PACKET_VERSION << " expected";
 		throw NetworkException(msg.str().c_str(), -1);
 	}
 
-	byte buffer[_headerSize];
+	uint8 buffer[_headerSize];
 	_pSocket.readBuffer(buffer,_headerSize-1);
 	setType((PacketType)buffer[1]);
 
-	id identifiant;
-	memcpy(&identifiant, &buffer[2], sizeof(id));
+	uint16 identifiant;
+	memcpy(&identifiant, &buffer[2], sizeof(uint16));
 	setId(identifiant);
 
-	uint size;
-	memcpy(&size,&buffer[4],sizeof(uint));
+	uint32 size;
+	memcpy(&size,&buffer[4],sizeof(uint32));
 	setBodySize(size);
 
 	return this;
 }
 
 Packet* Packet::doReadData () {
-	_pData = new std::vector<byte>();
-	uint length = getBodySize();
+	_pData = new std::vector<uint8>();
+	uint32 length = getBodySize();
 	io::dbg << "Reading data. Length : " << length << io::endl;
 	_pData->resize(length);
 	_pSocket.readBuffer(_pData->data(), length);
@@ -98,12 +98,12 @@ Packet* Packet::doReadData () {
 }
 
 Packet* Packet::doSend () {
-//	byte message[_headerSize + getBodySize()];
+//	uint8 message[_headerSize + getBodySize()];
 //	message[0] = getType();
-//	uint value = htonl(getBodySize());
-//	memcpy(&message[1],&value,sizeof(uint));
+//	uint32 value = htonl(getBodySize());
+//	memcpy(&message[1],&value,sizeof(uint32));
 //	memcpy(&message[_headerSize],getData()->data(),
-//				 getData()->size()*sizeof(byte));
+//				 getData()->size()*sizeof(uint8));
 //	_pSocket.writeBuffer(message,_headerSize+getBodySize());
 	return this;
 }

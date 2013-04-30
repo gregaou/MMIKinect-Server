@@ -18,7 +18,7 @@ public:
 	bool running;
 	bool finished;
 	bool terminated;
-	uint stackSize;
+	uint32 stackSize;
 
 	pthread_t thread_id;
 	static void *start(void *arg);

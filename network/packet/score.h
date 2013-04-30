@@ -20,10 +20,10 @@ public:
 	Score* setId (Person id) { _person = id; return this; }
 	Score* setScore (double score) { _score = score; return this; }
 
-	byte* toNetworkMessage () {
+	uint8* toNetworkMessage () {
 		if (!_data) {
-			_data = new byte[getNetworkMessageSize()];
-			byte* index = _data;
+			_data = new uint8[getNetworkMessageSize()];
+			uint8* index = _data;
 			memcpy(index, &_score, sizeof(double)); index += sizeof(double);
 			memcpy(index, _person.toNetworkMessage(), _person.getNetworkMessageSize());
 		}

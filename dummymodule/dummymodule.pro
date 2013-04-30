@@ -26,3 +26,5 @@ LIBS += \
 		../module/libmodule.a
 
 LIBS += -ldl
+
+DESTDIR = ../lib/

@@ -1,26 +1,19 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2013-04-29T19:52:19
+# Project created by QtCreator 2013-04-30T11:02:07
 #
 #-------------------------------------------------
 
 QT       -= core gui
 
-TARGET = MMIKinect-Server
-CONFIG   += console
-CONFIG   -= app_bundle
+TARGET = AudioModule
+TEMPLATE = lib
 
-TEMPLATE = app
+DEFINES += AUDIOMODULE_LIBRARY
 
+SOURCES += audiomodule.cpp
 
-SOURCES += \
-    server.cpp \
-    main.cpp \
-    clientthread.cpp
-
-HEADERS += \
-    server.h \
-    clientthread.h
+HEADERS += audiomodule.h
 
 INCLUDEPATH += \
 		../tools/ \
@@ -34,4 +27,4 @@ LIBS += \
 
 LIBS += -ldl
 
-DESTDIR = ../
+DESTDIR = ../lib/

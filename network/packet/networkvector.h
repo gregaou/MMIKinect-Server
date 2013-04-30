@@ -11,13 +11,13 @@ class NetworkVector : public std::vector<INetworkMessage>, public INetworkMessag
 public:
 	NetworkVector() : std::vector<INetworkMessage>(), INetworkMessage() {}
 
-	byte* toNetworkMessage () {
+	uint8* toNetworkMessage () {
 		if (!_data) {
-			_data = new byte[getNetworkMessageSize()];
-			byte* index = _data;
+			_data = new uint8[getNetworkMessageSize()];
+			uint8* index = _data;
 			uint8 size = (uint8) this->size();
 			memcpy(index, &size, sizeof(uint8)); index += sizeof(uint8);
-			for (uint i = 0; i < this->size(); i++) {
+			for (uint32 i = 0; i < this->size(); i++) {
 				memcpy(index, at(i).toNetworkMessage(), at(i).getNetworkMessageSize());
 				index += at(i).getNetworkMessageSize();
 			}
@@ -28,7 +28,7 @@ public:
 	int getNetworkMessageSize () {
 		if (!_size) {
 			_size = sizeof(uint8);
-			for (uint i = 0; i < size(); i++) {
+			for (uint32 i = 0; i < size(); i++) {
 				_size += at(i).getNetworkMessageSize();
 			}
 		}

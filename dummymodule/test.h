@@ -10,7 +10,7 @@ class Test : public IModule
 public:
 	Test() : IModule () {}
 
-	void onNewPacket (const Packet* p);
+	void onNewPacket (Packet* p);
 };
 
 #endif // TEST_H

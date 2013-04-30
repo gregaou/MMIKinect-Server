@@ -51,55 +51,55 @@ public:
 
 	/**
 	 * @brief Retourne la version de la trame
-	 * @return un byte correspondant à la version de la trame
+	 * @return un uint8 correspondant à la version de la trame
 	 */
-	byte getVersion();
+	uint8 getVersion();
 
 	/**
 		 * @brief Retourne le type de message
 		 * @return un uchar correspodant au type de message
 		 */
-	PacketType getType();
+	uint8 getType();
 
 	/**
 	 * @brief Retourne l'identifiant de la trame
 	 * @return un id (unsigned short int) correspondant au type de message
 	 */
-	id getId();
+	uint16 getId();
 
 	/**
 		 * @brief Retourne les données du packet
-		 * @return un QByteArray contenant les données du Packet
+		 * @return un Quint8Array contenant les données du Packet
 		 */
-	byte *getData();
+	uint8 *getData();
 
 	/**
 	 * @brief Défini la version du packet
-	 * @param version un byte correspondant à la version du packet
+	 * @param version un uint8 correspondant à la version du packet
 	 * @return Le packet d'origine
 	 */
-	Packet* setVersion(byte version);
+	Packet* setVersion(uint8 version);
 
 	/**
 		 * @brief Défini le type du packet
 		 * @param type un uchar correspondant à un type de message
 		 * @return Le packet d'origine
 		 */
-	Packet* setType(PacketType type);
+	Packet* setType(uint8 type);
 
 	/**
 	 * @brief Défini l'identifiant du packet
 	 * @param identifiant un id correspondant à l'identifiant du message
 	 * @return Le packet d'origine
 	 */
-	Packet* setId(id identifiant);
+	Packet* setId(uint16 identifiant);
 
 	/**
 		 * @brief Défini les données du packet
-		 * @param data un QByteArray correspondant aux données du Packet
+		 * @param data un Quint8Array correspondant aux données du Packet
 		 * @return Le packet d'origine
 		 */
-	Packet* setData(std::vector<byte>* data);
+	Packet* setData(std::vector<uint8>* data);
 
 	/**
 		 * @brief Envoie le packet correctement formaté
@@ -109,18 +109,18 @@ public:
 
 	/**
 		 * @brief Retourne la taille du message
-		 * @return un uint correspodant à la taille des données
+		 * @return un uint32 correspodant à la taille des données
 		 */
-	uint getBodySize();
+	uint32 getBodySize();
 
 private:
 
 	/**
 		 * @brief Défini la taille des données
-		 * @param type un uint correspondant à la taille des données
+		 * @param type un uint32 correspondant à la taille des données
 		 * @return Le packet d'origine
 		 */
-	Packet* setBodySize(uint size);
+	Packet* setBodySize(uint32 size);
 
 	/**
 	 * @brief Lis et rempli le champ 'version'
@@ -143,18 +143,18 @@ private:
 
 	/**
 		 * @brief Lis les données du Stream et les écris dans le buffer
-		 * @param data le QByteArray utilisé comme buffer
+		 * @param data le Quint8Array utilisé comme buffer
 		 * @param length la longueur des données lue (en octet).
 		 * @return le packet d'origine
 		 */
-	//Packet* doReadStream(std::vector<byte>* data, int length);
+	//Packet* doReadStream(std::vector<uint8>* data, int length);
 
-	byte _version;
-	PacketType _type;
-	id _id;
-	uint _bodySize;
+	uint8 _version;
+	uint8 _type;
+	uint16 _id;
+	uint32 _bodySize;
 	static const int _headerSize = 8;
-	std::vector<byte>* _pData;
+	std::vector<uint8>* _pData;
 	TcpSocket _pSocket;
 };
 

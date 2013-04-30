@@ -11,7 +11,7 @@
 class IModule {
 public:
 	IModule () {}
-	virtual void onNewPacket (const Packet* p) = 0;
+	virtual void onNewPacket (Packet* p) = 0;
 };
 
 class ModuleThread : public Thread {
@@ -21,7 +21,7 @@ public :
 		_module->onNewPacket(getPacket());
 	}
 	ModuleThread* setPacket(Packet* p) { _packet = p; return this; }
-	const Packet* getPacket() { return _packet; }
+	Packet* getPacket() { return _packet; }
 private :
 	IModule* _module;
 	Packet* _packet;
