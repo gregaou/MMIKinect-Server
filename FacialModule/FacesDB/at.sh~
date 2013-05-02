@@ -1,0 +1,10 @@
+#! /bin/bash
+
+for((i = 1;i <= 40;i++)); do
+	k=s${i}
+	cd $k
+	for((j = 1;j <= 10;j++)); do
+		echo ".at/$k/$j.pgm;$i" >> ../at.txt
+	done
+	cd ..
+done
