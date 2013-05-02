@@ -12,13 +12,15 @@ CONFIG += staticlib
 
 SOURCES += \
     moduleserver.cpp \
-    moduleloader.cpp
+    modulehandler.cpp \
+    modulethread.cpp
 
 HEADERS += \
     moduleserver.h \
-    moduleloader.h \
     moduleexception.h \
-    imodule.h
+    imodule.h \
+    modulehandler.h \
+    modulethread.h
 
 INCLUDEPATH += \
 		../tools/ \

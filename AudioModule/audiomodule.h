@@ -5,6 +5,8 @@
 
 #include "imodule.h"
 #include "packet/trainpacket.h"
+#include "packet/scorepacket.h"
+#include "packet/listpacket.h"
 
 #include "audiosample.h"
 
@@ -15,6 +17,8 @@ public:
 
 	void onNewPacket(Packet *p);
 	void onTrainRequest(Packet* p);
+	void onScoreRequest(Packet* p);
+	void onListRequest(Packet* p);
 };
 
 #endif // AUDIOMODULE_H

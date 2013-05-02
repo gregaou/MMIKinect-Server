@@ -11,6 +11,8 @@ io::Logger::Logger (std::string prefix, std::ostream& stream)
 	: std::ostream(stream.rdbuf()), __prefix(prefix)
 {}
 
+io::Logger::~Logger() {}
+
 std::ostream& io::Logger::operator<< (const char* str) {
 	std::ostream& __out = *this;
 	std::stringstream msg;

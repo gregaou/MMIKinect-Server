@@ -12,34 +12,24 @@
 class Score : public INetworkMessage
 {
 public:
-	Score(std::string id, double score) :
-		INetworkMessage(), _person(id), _score(score) {}
+	Score(std::string id, double score);
+	Score(Person* p, double score);
+	Score(const Score& s);
+	virtual ~Score();
 
-	Person getPerson () { return _person; }
-	double getScore () { return _score; }
+	Person* getPerson ();
+	double getScore ();
 
-	Score* setId (Person id) { _person = id; return this; }
-	Score* setScore (double score) { _score = score; return this; }
+	Score* setPerson (Person* person);
+	Score* setScore (double score);
 
-	uint8* toNetworkMessage () {
-		if (!_data) {
-			_data = new uint8[getNetworkMessageSize()];
-			uint8* index = _data;
-			memcpy(index, &_score, sizeof(double)); index += sizeof(double);
-			memcpy(index, _person.toNetworkMessage(), _person.getNetworkMessageSize());
-		}
-		return _data;
-	}
+	static Score* fromNetworkMessage(uint8 *data);
 
-	int getNetworkMessageSize () {
-		if (!_size) {
-			_size = sizeof(double) + _person.getNetworkMessageSize();
-		}
-		return _size;
-	}
+	uint8* toNetworkMessage ();
+	int getNetworkMessageSize ();
 
 private:
-	Person _person;
+	Person* _person;
 	double _score;
 };
 

@@ -1,11 +1,30 @@
 #include "moduleserver.h"
 
-std::string* ModuleServer::_path = NULL;
+#include <dirent.h>
 
-ModuleServer::ModuleServer() : _modules(0), _threads(0)
+#include "logger.h"
+#include "packet/packet.h"
+#include "moduleexception.h"
+#include "modulehandler.h"
+
+ModuleServer::ModuleServer() : _modules(0)
 {
+	load();
+}
+
+ModuleServer::~ModuleServer() {
+	if (_modules) {
+		for ( std::set<ModuleHandler*>::iterator it = _modules->begin();
+					it != _modules->end(); ++it) {
+			delete (*it);
+		}
+		delete _modules;
+	}
+}
+
+ModuleServer* ModuleServer::load(std::string fromPath) {
 	// Ouverture du dossier
-	DIR* directory = opendir(getPath()->c_str());
+	DIR* directory = opendir(fromPath.c_str());
 	if (directory != NULL) {
 		struct dirent* entry;
 		// Lecture de chaque fichier
@@ -16,64 +35,54 @@ ModuleServer::ModuleServer() : _modules(0), _threads(0)
 			if(index != -1 && filename.substr(index) == ".so") {
 				// On la charge
 				std::stringstream path;
-				path << getPath()->c_str() << filename;
-				addModuleLoader(new ModuleLoader(path.str()));
+				path << fromPath.c_str() << filename;
+				addModuleHandler(new ModuleHandler(path.str(), this));
 			}
 		}
 		closedir(directory);
 	}
-}
 
-ModuleServer::~ModuleServer() {
-	if (_modules) delete _modules;
-	if (_threads) {
-		for (uint32 i = 0; i < _threads->size(); ++i) {
-			_threads->at(i)->wait();
-		}
-	}
-}
-
-void ModuleServer::setPath(std::string* path) {
-	_path = path;
-	kill();
-}
-
-std::string* ModuleServer::getPath() {
-	if (!_path) {
-		_path = new std::string("lib/");
-	}
-	return _path;
-}
-
-ModuleServer* ModuleServer::addModuleLoader (ModuleLoader* module) {
-	getModules()->push_back(module);
 	return this;
 }
 
-std::vector<ModuleLoader*>* ModuleServer::getModules () {
+ModuleServer* ModuleServer::reload(std::string fromPath) {
+	getModuleHandlers()->clear();
+	return load(fromPath);
+}
+
+ModuleServer* ModuleServer::addModuleHandler (ModuleHandler* module) {
+	getModuleHandlers()->insert(module);
+	return this;
+}
+
+std::set<ModuleHandler*>* ModuleServer::getModuleHandlers () {
 	if (!_modules) {
-		_modules = new std::vector<ModuleLoader*>();
+		_modules = new std::set<ModuleHandler*>();
 	}
 	return _modules;
 }
 
-std::vector<ModuleThread*>* ModuleServer::getModuleThreads() {
-	if (!_threads) {
-		_threads = new std::vector<ModuleThread*> ();
-	}
-	return _threads;
-}
-
 ModuleServer* ModuleServer::onPacketReceived (Packet* p) {
-	for (uint32 i = 0; i < getModules()->size(); ++i) {
+	// Make sure that there's some data to read.
+	p->getData();
+
+	for (std::set<ModuleHandler*>::iterator i = getModuleHandlers()->begin();
+			 i != getModuleHandlers()->end(); ++i) {
 		try {
-			IModule* module = getModules()->at(i)->getModuleInstance();
-			ModuleThread* t = new ModuleThread(module);
-			t->setPacket(p)->start();
-			getModuleThreads()->push_back(t);
+			(*i)->onNewPacket(new Packet(*p));
 		} catch (ModuleException &e) {
 			io::err << e.what() << io::endl;
 		}
+	}
+	return this;
+}
+
+ModuleServer* ModuleServer::onAllThreadsDone (ModuleHandler* module) {
+	// Si le module n'est plus dans la liste des modules
+	// Alors les modules ont été rechargé
+	if (getModuleHandlers()->find(module) == getModuleHandlers()->end()) {
+		// On peut donc se débarasser de delui-la
+		delete module;
 	}
 	return this;
 }

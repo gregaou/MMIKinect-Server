@@ -18,14 +18,16 @@ void AudioModule::onNewPacket(Packet *p)  {
 
 	switch (action) {
 		case LISTING_REQUEST :
+			onListRequest(p);
 			break;
 		case TRAINING_REQUEST :
 			onTrainRequest(p);
 			break;
 		case SCORING_REQUEST :
+		onScoreRequest(p);
 			break;
 		default :
-			io::dbg << "Audio Module : Nothing to do (p=" << p << ")" << io::endl;
+			io::dbg << "Audio Module : Nothing to do (id=" << p->getId() << ")" << io::endl;
 			break;
 	}
 }
@@ -33,7 +35,7 @@ void AudioModule::onNewPacket(Packet *p)  {
 void AudioModule::onTrainRequest(Packet* p) {
 	TrainRequestPacket trp(p);
 	if (!trp.getTrainDataSize()) {
-		io::warn << "Audio Module : data size = 0 (p=" << p << ")" << io::endl;
+		io::warn << "Audio Module : data size = 0 (id=" << trp.getId() << ")" << io::endl;
 		return;
 	}
 	io::dbg << "Train request for "
@@ -45,6 +47,26 @@ void AudioModule::onTrainRequest(Packet* p) {
 	AudioSample sample(trp.getTrainData(), trp.getTrainDataSize(), AUDIO_FORMAT_WAVE);
 	sample.doTrain(id);
 
-	TrainResultPacket result(&trp);
-	result.doSend();
+	TrainResultPacket reponse(&trp);
+	reponse.doSend();
+}
+
+void AudioModule::onScoreRequest(Packet* p) {
+	ScoreRequestPacket srp(p);
+	if (!srp.getBodySize()) {
+		io::warn << "Audio Module : data size = 0 (id=" << srp.getId() << ")" << io::endl;
+		return;
+	}
+	io::dbg << "Score request (id=" << srp.getId() << ")" << io::endl;
+
+	AudioSample sample(srp.getData(), srp.getBodySize(), AUDIO_FORMAT_WAVE);
+	sample.doTest()->getScoring();
+
+	ScoreResultPacket reponse(&srp);
+	reponse.setScoringVector(sample.getScoring())->doSend();
+}
+
+void AudioModule::onListRequest(Packet *p) {
+	ListResultPacket lrp(p);
+	lrp.setPeopleVector(new PeopleVector())->doSend();
 }

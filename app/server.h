@@ -6,7 +6,7 @@
 #include <dirent.h>
 
 #include "logger.h"
-#include "moduleloader.h"
+#include "modulehandler.h"
 #include "moduleserver.h"
 #include "tcpsocketserver.h"
 #include "clientthread.h"

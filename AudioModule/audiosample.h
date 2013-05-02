@@ -218,20 +218,6 @@ public:
 	 * \return L'instance courante.
 	 */
 	AudioSample* doTrain(string person);
-
-	/**
-	 * \brief Convertie un Scoring en string.
-	 *
-	 * Le scoring sera affiché de la sorte :
-	 * "<personne1>" scored <scoring1>
-	 * "<personne2>" scored <scoring2>
-	 * "<personne3>" scored <scoring3>
-	 * ...
-	 *
-	 * @param scoring Le scoring à convertir en String
-	 * @return Le resultat de la conversion. Peut etre une chaine vide.
-	 */
-	static string scoringToString (ScoringVector* scoring);
 };
 
 #endif // AUDIOSAMPLE_H

@@ -53,7 +53,12 @@ public:
 	 * @brief Créé une copie d'un Packet
 	 * @param p le Packet à copier
 	 */
-	Packet(Packet* p);
+	Packet(Packet& p);
+
+	/**
+	 *	@brief Detruit le packet.
+	 */
+	~Packet();
 
 	/**
 	 * @brief Retourne la version de la trame
@@ -102,10 +107,18 @@ public:
 
 	/**
 		 * @brief Défini les données du packet
-		 * @param data un Quint8Array correspondant aux données du Packet
+		 * @param data un vecteur correspondant aux données du Packet
 		 * @return Le packet d'origine
 		 */
-	Packet* setData(std::vector<uint8>* data);
+	Packet* setData(std::vector<uint8>* data = NULL);
+
+	/**
+	 * @brief Défini les données du packet
+	 * @param data un tableau de uint8 correspondant aux données du Packet
+	 * @param size la taille du tableau de données
+	 * @return  Le packet d'origine
+	 */
+	Packet* setData(uint8* data, int size);
 
 	/**
 		 * @brief Envoie le packet correctement formaté
@@ -160,7 +173,7 @@ private:
 	uint16 _id;
 	uint32 _bodySize;
 	static const int _headerSize = 8;
-	std::vector<uint8>* _pData;
+	uint8* _pData;
 	TcpSocket _pSocket;
 };
 

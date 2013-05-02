@@ -25,6 +25,7 @@ class Logger : public std::ostream {
 public :
 	Logger (std::string prefix = DEFAULT_PREFIX,
 					std::ostream& stream = DEFAULT_STREAM);
+	virtual ~Logger ();
 
 	virtual std::ostream& operator<< (const char* str);
 

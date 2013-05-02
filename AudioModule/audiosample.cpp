@@ -36,7 +36,7 @@ AudioSample* AudioSample::doSaveDataToFile(string filename) {
 
 AudioSample* AudioSample::doClearScoring() {
     if (_scoring) {
-        _scoring->clear();
+				_scoring->clear();
     }
 
     return this;
@@ -44,7 +44,7 @@ AudioSample* AudioSample::doClearScoring() {
 
 AudioSample* AudioSample::doAddScoring (string person, double scoring) {
     if (!_scoring) {
-				_scoring = new ScoringVector();
+				_scoring = new NetworkVector<Score>();
     }
 		Score msg = Score(person, scoring);
 		_scoring->push_back(msg);
@@ -213,14 +213,4 @@ AudioSample* AudioSample::doTrainTarget(string person) {
     ndx.close();
     system(cmd.str().c_str());
     return this;
-}
-
-string AudioSample::scoringToString (ScoringVector* scoring) {
-    stringstream str("");
-    for (int i = 0; i < (scoring ? scoring->size() : 0); i++) {
-				Score score = (Score&) scoring->at(i);
-				str << "\"" << score.getPerson().getId() << "\""
-						<< "scored " << score.getScore() << endl;
-    }
-    return str.str();
 }

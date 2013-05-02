@@ -14,7 +14,11 @@ SOURCES += \
     tcpsocketserver.cpp \
     tcpsocket.cpp \
     packet/packet.cpp \
-    packet/trainpacket.cpp
+    packet/trainpacket.cpp \
+    packet/scorepacket.cpp \
+    packet/score.cpp \
+    packet/person.cpp \
+    packet/listpacket.cpp
 
 HEADERS += \
     tcpsocketserver.h \
@@ -25,7 +29,9 @@ HEADERS += \
     packet/packet.h \
     packet/networkvector.h \
     packet/inetworkmessage.h \
-    packet/trainpacket.h
+    packet/trainpacket.h \
+    packet/scorepacket.h \
+    packet/listpacket.h
 
 INCLUDEPATH += ../tools/
 

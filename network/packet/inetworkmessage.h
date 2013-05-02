@@ -6,7 +6,7 @@
 class INetworkMessage {
 public:
 	INetworkMessage () : _data(0), _size(0) {}
-	//virtual INetworkMessage* fromNetworkMessage (uint8* data, int size) = 0;
+	virtual ~INetworkMessage () { if (_data) {delete[] _data; _data = 0;} }
 	virtual uint8* toNetworkMessage () = 0;
 	virtual int getNetworkMessageSize () = 0;
 protected:

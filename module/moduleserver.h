@@ -1,36 +1,30 @@
 #ifndef MODULESERVER_H
 #define MODULESERVER_H
 
-#include <vector>
+#include <string>
+#include <set>
 
-#include <dirent.h>
+class ModuleHandler;
+class Packet;
 
-#include "logger.h"
-#include "packet/packet.h"
-#include "moduleloader.h"
-#include "singleton.h"
-
-class ModuleServer : public Singleton<ModuleServer>
+class ModuleServer
 {
-	friend class Singleton<ModuleServer>;
-
 public:
-	static std::string* getPath ();
-	static void setPath(std::string* path);
-	ModuleServer* addModuleLoader (ModuleLoader* module);
-	ModuleServer* onPacketReceived (Packet* p);
-
-private:
 	ModuleServer ();
 	~ModuleServer ();
-	std::vector<ModuleLoader*>* getModules();
-	std::vector<ModuleThread*>* getModuleThreads();
+
+	ModuleServer* addModuleHandler (ModuleHandler* module);
+	ModuleServer* onPacketReceived (Packet* p);
+	ModuleServer* onAllThreadsDone (ModuleHandler* module);
+
+	ModuleServer* reload(std::string fromPath = "./lib/");
+private:
+	ModuleServer* load(std::string fromPath = "./lib/");
+	std::set<ModuleHandler*>* getModuleHandlers();
 
 	static ModuleServer* _instance;
-	static std::string* _path;
 
-	std::vector<ModuleLoader*>* _modules;
-	std::vector<ModuleThread*>* _threads;
+	std::set<ModuleHandler*>* _modules;
 };
 
 #endif // MODULESERVER_H
