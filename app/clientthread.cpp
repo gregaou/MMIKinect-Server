@@ -17,7 +17,7 @@ void ClientThread::run()
 	{
 		try {
 			Packet* p = new Packet(_socketDescriptor);
-			getModuleServer()->onPacketReceived(p);
+			getModuleServer()->onNewPacket(p);
 			delete p;
 		} catch(NetworkException e) {
 			io::err << "Client(" << _socketDescriptor << ") : " << e.what() << io::endl;

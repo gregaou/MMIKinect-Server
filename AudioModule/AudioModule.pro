@@ -9,8 +9,6 @@ QT       -= core gui
 TARGET = AudioModule
 TEMPLATE = lib
 
-DEFINES += AUDIOMODULE_LIBRARY
-
 SOURCES += audiomodule.cpp \
     audiosample.cpp
 

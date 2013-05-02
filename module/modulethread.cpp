@@ -12,7 +12,11 @@ ModuleThread::~ModuleThread() {
 }
 
 void ModuleThread::run() {
-	_module->onNewPacket(_packet);
+	try {
+		_module->onNewPacket(_packet);
+	} catch (std::exception &e) {
+		io::err << "Error while running thread : " << e.what() << io::endl;
+	}
 	_parent->onThreadFinished();
 }
 

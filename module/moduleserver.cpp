@@ -62,7 +62,7 @@ std::set<ModuleHandler*>* ModuleServer::getModuleHandlers () {
 	return _modules;
 }
 
-ModuleServer* ModuleServer::onPacketReceived (Packet* p) {
+ModuleServer* ModuleServer::onNewPacket (Packet* p) {
 	// Make sure that there's some data to read.
 	p->getData();
 

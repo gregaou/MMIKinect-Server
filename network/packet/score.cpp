@@ -48,13 +48,12 @@ Score* Score::fromNetworkMessage(uint8 *data) {
 }
 
 uint8* Score::toNetworkMessage () {
-	if (!_data) {
-		_data = new uint8[getNetworkMessageSize()];
-		uint8* index = _data;
-		memcpy(index, &_score, sizeof(double)); index += sizeof(double);
-		memcpy(index, _person->toNetworkMessage(), _person->getNetworkMessageSize());
-	}
-	return _data;
+	uint8* data = new uint8[getNetworkMessageSize()];
+	uint8* index = data;
+	memcpy(index, &_score, sizeof(double)); index += sizeof(double);
+	memcpy(index, _person->toNetworkMessage(), _person->getNetworkMessageSize());
+
+	return data;
 }
 
 int Score::getNetworkMessageSize () {

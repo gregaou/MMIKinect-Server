@@ -11,6 +11,7 @@ Thread::~Thread()
 	if (d->running && !d->finished)
 		io::warn << "Thread: Destroyed while thread is still running" << io::endl;
 	pthread_mutex_unlock(&d->mutex);
+	delete d;
 }
 
 bool Thread::isFinished() const
@@ -68,6 +69,7 @@ void Thread::start()
 
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	pthread_attr_setinheritsched(&attr, PTHREAD_INHERIT_SCHED);
 	int code = pthread_create(&d->thread_id, &attr, ThreadPrivate::start, this);
 	pthread_attr_destroy(&attr);
@@ -120,6 +122,7 @@ void Thread::wait()
 	while (d->running) {
 		pthread_cond_wait(&d->cond, &d->mutex);
 	}
+	pthread_join(d->thread_id, NULL);
 	pthread_mutex_unlock(&d->mutex);
 }
 
