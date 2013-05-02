@@ -37,6 +37,7 @@ ModuleHandler* ModuleHandler::onNewPacket(Packet* p) {
 	getThreads()->insert(t);
 	pthread_mutex_unlock(&_mutex);
 	t->start(p);
+
 	return this;
 }
 

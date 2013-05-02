@@ -2,20 +2,22 @@
 
 Packet::Packet(Packet& p) {
 	_pSocket = p._pSocket;
-	setVersion(p._version);
-	setType(p._type);
-	setId(p._id);
+	_version = p._version;
+	_type = p._type;
+	_id = p._id;
 	if (p._pData) {
-		uint8* data = new uint8[p._bodySize];
+		_pData = new uint8[p._bodySize];
 		if (p._bodySize)
-			memcpy(data, p._pData, p._bodySize);
-		setData(data, p._bodySize);
+			memcpy(_pData, p._pData, p._bodySize);
+		_bodySize = p._bodySize;
 	} else {
-		setData(NULL, 0);
+		_pData = 0;
+		_bodySize = 0;
 	}
 }
 
-Packet::Packet(int socketDescriptor): _version(0x00), _type(UNDEFINED_TYPE), _id(0), _bodySize(0), _pData(0)
+Packet::Packet(int socketDescriptor)
+	: _version(0x00), _type(UNDEFINED_TYPE), _id(0), _bodySize(0), _pData(0)
 {
 	_pSocket.setSocket(socketDescriptor);
 }
@@ -71,6 +73,7 @@ Packet* Packet::setBodySize(uint32 size) {
 }
 
 Packet* Packet::setData(std::vector<uint8>* data) {
+	if (_pData) { delete[] _pData; }
 	if (!data) { data = new std::vector<uint8>(); }
 	_pData = data->data();
 	setBodySize(data->size());
@@ -78,6 +81,7 @@ Packet* Packet::setData(std::vector<uint8>* data) {
 }
 
 Packet* Packet::setData(uint8* data, int size) {
+	if (_pData) { delete[] _pData; }
 	_pData = data;
 	setBodySize(size);
 	return this;

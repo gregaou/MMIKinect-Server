@@ -5,6 +5,8 @@
 #include "imodule.h"
 #include "packet/packet.h"
 
+#include "moduleexception.h"
+
 class Test : public IModule
 {
 public:

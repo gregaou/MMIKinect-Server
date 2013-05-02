@@ -11,6 +11,7 @@
 class IModule {
 public:
 	IModule () {}
+	virtual ~IModule () {}
 	virtual void onNewPacket (Packet* p) = 0;
 };
 

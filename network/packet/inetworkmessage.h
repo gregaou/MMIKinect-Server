@@ -5,13 +5,10 @@
 
 class INetworkMessage {
 public:
-	INetworkMessage () : _data(0), _size(0) {}
-	virtual ~INetworkMessage () { if (_data) {delete[] _data; _data = 0;} }
+	INetworkMessage () {}
+	virtual ~INetworkMessage () { }
 	virtual uint8* toNetworkMessage () = 0;
 	virtual int getNetworkMessageSize () = 0;
-protected:
-	uint8* _data;
-	int _size;
 };
 
 #endif // INETWORKMESSAGE_H

@@ -14,7 +14,7 @@ public:
 	~ModuleServer ();
 
 	ModuleServer* addModuleHandler (ModuleHandler* module);
-	ModuleServer* onPacketReceived (Packet* p);
+	ModuleServer* onNewPacket (Packet* p);
 	ModuleServer* onAllThreadsDone (ModuleHandler* module);
 
 	ModuleServer* reload(std::string fromPath = "./lib/");

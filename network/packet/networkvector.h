@@ -27,17 +27,16 @@ public:
 	}
 
 	uint8* toNetworkMessage () {
-		if (!_data) {
-			_data = new uint8[getNetworkMessageSize()];
-			uint8* index = _data;
-			uint8 size = (uint8) this->size();
-			memcpy(index, &size, sizeof(uint8)); index += sizeof(uint8);
-			for (uint8 i = 0; i < size; i++) {
-				memcpy(index, this->at(i).toNetworkMessage(), this->at(i).getNetworkMessageSize());
-				index += this->at(i).getNetworkMessageSize();
-			}
+		uint8* data = new uint8[getNetworkMessageSize()];
+		uint8* index = data;
+		uint8 size = (uint8) this->size();
+		memcpy(index, &size, sizeof(uint8)); index += sizeof(uint8);
+		for (uint8 i = 0; i < size; i++) {
+			memcpy(index, this->at(i).toNetworkMessage(), this->at(i).getNetworkMessageSize());
+			index += this->at(i).getNetworkMessageSize();
 		}
-		return _data;
+
+		return data;
 	}
 
 	int getNetworkMessageSize () {
