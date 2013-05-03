@@ -43,6 +43,7 @@ private:
 class Logger : public std::ostream, public Singleton<Logger>
 {
 	friend class Singleton<Logger>;
+<<<<<<< HEAD
 	friend class LoggerBuffer;
 public :
 	virtual Logger& operator<< (const LoggerPriority priority);
@@ -52,6 +53,15 @@ private :
 
 	LoggerBuffer* _buffer;
 	pthread_mutex_t _mutex;
+=======
+public :
+	virtual Logger& operator<< (const LoggerPriority priority);
+	Logger& setBuffer(LoggerBuffer* buffer);
+//private :
+	Logger();
+
+	LoggerBuffer* _buffer;
+>>>>>>> e4b72eb91728a7e7d866e9f8cfef7e3ade6cd849
 };
 
 class Loggable

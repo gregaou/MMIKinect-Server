@@ -12,6 +12,7 @@ class IModule : public Loggable {
 public:
 	IModule () {}
 	virtual ~IModule () {}
+	const std::string getName() const;
 	virtual void onNewPacket (Packet* p) = 0;
 };
 
