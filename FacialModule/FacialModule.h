@@ -27,6 +27,8 @@ public:
     FacialModule();
     ~FacialModule();
 	
+		const std::string getName() const;
+
     void onNewPacket(Packet* p);
 	
 private:

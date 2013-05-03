@@ -11,11 +11,13 @@ ModuleThread::~ModuleThread() {
 	if (_packet) delete _packet;
 }
 
+const std::string ModuleThread::getName() const { return "ModuleThread"; }
+
 void ModuleThread::run() {
 	try {
 		_module->onNewPacket(_packet);
 	} catch (std::exception &e) {
-		io::err << "Error while running thread : " << e.what() << io::endl;
+		*this << ERROR << "Error while running thread : " << e.what() << std::endl;
 	}
 	_parent->onThreadFinished();
 }

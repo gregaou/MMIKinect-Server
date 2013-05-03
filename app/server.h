@@ -11,11 +11,14 @@
 #include "tcpsocketserver.h"
 #include "clientthread.h"
 
-class Server
+class Server : public Loggable
 {
 public:
 	Server();
 	~Server();
+
+	const std::string getName() const;
+
 	Server* doWork();
 
 private:

@@ -40,7 +40,7 @@ enum PacketType {
 	VIDEO_LISTING_RESULT   = VIDEO_TYPE | LISTING_RESULT
 };
 
-class Packet {
+class Packet : public Loggable {
 public:
 
 	/**
@@ -59,6 +59,12 @@ public:
 	 *	@brief Detruit le packet.
 	 */
 	~Packet();
+
+	/**
+	 * @brief Retourne le nom du packet
+	 * @return un string correponsant au packet
+	 */
+	const std::string getName() const;
 
 	/**
 	 * @brief Retourne la version de la trame

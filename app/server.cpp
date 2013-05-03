@@ -1,12 +1,14 @@
 #include "server.h"
 
 Server::Server() : _pSocket(0) {
-	io::info << "Server : Running..." << io::endl;
+	*this << INFO << "Running..." << std::endl;
 }
 
 Server::~Server() {
 	if(!_pSocket) delete _pSocket;
 }
+
+const std::string Server::getName() const { return "Server"; }
 
 Server* Server::doWork() {
 	_pSocket = new TcpSocketServer();
@@ -18,7 +20,7 @@ Server* Server::doWork() {
 		}
 		catch (NetworkException e)
 		{
-			io::err << e.what() << io::endl;
+			*this << ERROR << e.what() << std::endl;
 			break;
 		}
 	}

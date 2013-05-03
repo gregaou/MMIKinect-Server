@@ -9,10 +9,15 @@ ClientThread::~ClientThread () {
 	if (_moduleServer) delete _moduleServer;
 }
 
+const std::string ClientThread::getName() const {
+	std::ostringstream ret;
+	ret << "Client(" << _socketDescriptor << ")";
+	return ret.str();
+}
 
 void ClientThread::run()
 {
-	io::info << "Client(" << _socketDescriptor << ") : connected" << io::endl;
+	*this << INFO << "connected" << std::endl;
 	while(1)
 	{
 		try {
@@ -20,8 +25,8 @@ void ClientThread::run()
 			getModuleServer()->onNewPacket(p);
 			delete p;
 		} catch(NetworkException e) {
-			io::err << "Client(" << _socketDescriptor << ") : " << e.what() << io::endl;
-			io::info << "Client(" << _socketDescriptor << ") : Disconnected" << io::endl;
+			*this << ERROR << e.what() << std::endl;
+			*this << INFO << "Disconnected" << std::endl;
 			close(_socketDescriptor);
 			break;
 		}

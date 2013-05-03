@@ -2,62 +2,63 @@
 #define LOGGER_H
 
 #include <iostream>
-#include <string>
 #include <sstream>
 
-#define ERROR_STREAM   std::cerr
-#define DEBUG_STREAM   std::cout
-#define INFO_STREAM    std::clog
-#define WARNING_STREAM std::clog
-#define DEFAULT_STREAM INFO_STREAM
+#include "singleton.h"
 
-#define ERROR_PREFIX   "[ERROR]: "
-#define DEBUG_PREFIX   "[DEBUG]: "
-#define INFO_PREFIX    "[INFO] : "
-#define WARNING_PREFIX "[WARN] : "
-#define DEFAULT_PREFIX INFO_PREFIX
+using namespace std;
 
-namespace io {
+enum LoggerPriority {
+	UNDEFINED,
+	DEBUG,
+	INFO,
+	WARNING,
+	ERROR
+};
 
-extern char endl;
+class LoggerBuffer : public std::stringbuf
+{
+public:
+	LoggerBuffer(const string prefix, const LoggerPriority priority,
+							 ostream& stream = cout, LoggerBuffer* next = NULL);
 
-class Logger : public std::ostream {
-public :
-	Logger (std::string prefix = DEFAULT_PREFIX,
-					std::ostream& stream = DEFAULT_STREAM);
-	virtual ~Logger ();
+	LoggerBuffer* setNext(LoggerBuffer* next = NULL);
+	LoggerBuffer* setCurrentPriority(const LoggerPriority priority);
+	LoggerBuffer* setMutex(pthread_mutex_t* mutex);
+	virtual int sync ();
 
-	virtual std::ostream& operator<< (const char* str);
+protected:
+	LoggerBuffer* onNewMessage(const string msg, const LoggerPriority priority);
+	LoggerBuffer* displayMessage(const string msg);
 
 private:
-	std::string __prefix;
+	const string _prefix;
+	const LoggerPriority _priority;
+	ostream& _stream;
+	LoggerPriority _currentPriority;
+	pthread_mutex_t* _mutex;
+	LoggerBuffer* _next;
 };
 
-class DebugLogger : public Logger {
+class Logger : public std::ostream, public Singleton<Logger>
+{
+	friend class Singleton<Logger>;
+	friend class LoggerBuffer;
+public :
+	virtual Logger& operator<< (const LoggerPriority priority);
+	Logger& setBuffer(LoggerBuffer* buffer);
+private :
+	Logger();
+
+	LoggerBuffer* _buffer;
+	pthread_mutex_t _mutex;
+};
+
+class Loggable
+{
 public:
-	DebugLogger () : Logger(DEBUG_PREFIX,DEBUG_STREAM) {}
+	virtual const string getName () const = 0;
+	virtual Logger& operator<< (const LoggerPriority priority);
 };
-
-class InfoLogger : public Logger {
-public:
-	InfoLogger () : Logger(INFO_PREFIX,INFO_STREAM) {}
-};
-
-class WarningLogger : public Logger {
-public:
-	WarningLogger () : Logger(WARNING_PREFIX,WARNING_STREAM) {}
-};
-
-class ErrorLogger : public Logger {
-public:
-	ErrorLogger () : Logger(ERROR_PREFIX,ERROR_STREAM) {}
-};
-
-extern ErrorLogger err;
-extern InfoLogger info;
-extern WarningLogger warn;
-extern DebugLogger dbg;
-
-}
 
 #endif // LOGGER_H

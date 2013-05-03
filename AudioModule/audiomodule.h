@@ -15,6 +15,8 @@ class AudioModule : public IModule
 public:
 	AudioModule() : IModule() {}
 
+	const std::string getName() const;
+
 	void onNewPacket(Packet *p);
 	void onTrainRequest(Packet* p);
 	void onScoreRequest(Packet* p);

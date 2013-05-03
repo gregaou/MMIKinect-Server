@@ -10,6 +10,8 @@ public:
 	ClientThread(int socketDescriptor);
 	~ClientThread ();
 
+	const std::string getName() const;
+
 	void run();
 
 private:

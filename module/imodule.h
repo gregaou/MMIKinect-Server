@@ -8,7 +8,7 @@
 #include "packet/packet.h"
 #include "thread.h"
 
-class IModule {
+class IModule : public Loggable {
 public:
 	IModule () {}
 	virtual ~IModule () {}

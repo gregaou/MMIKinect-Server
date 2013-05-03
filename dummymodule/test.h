@@ -12,6 +12,7 @@ class Test : public IModule
 public:
 	Test() : IModule () {}
 
+	const std::string getName() const;
 	void onNewPacket (Packet* p);
 };
 

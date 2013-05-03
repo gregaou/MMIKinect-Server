@@ -27,6 +27,8 @@ Packet::~Packet() {
 		delete[] _pData;
 }
 
+const std::string Packet::getName() const { return "Packet"; }
+
 uint8 Packet::getVersion(){
 	if (!_version) { doReadVersion(); }
 	return _version;
@@ -122,7 +124,7 @@ Packet* Packet::doReadHeader() throw (NetworkException){
 Packet* Packet::doReadData () {
 	uint32 length = getBodySize();
 	_pData = new uint8[length];
-	io::dbg << "Reading data. Length : " << length << io::endl;
+	*this << DEBUG << "Reading data. Length : " << length << std::endl;
 	_pSocket.readBuffer(_pData, length);
 	return this;
 }
