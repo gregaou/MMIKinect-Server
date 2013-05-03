@@ -1,7 +1,16 @@
+#include <fstream>
+
 #include "server.h"
 
 int main()
 {
+	LoggerBuffer* buf = new LoggerBuffer("[DEBUG]   : ", DEBUG);
+	buf      ->setNext( new LoggerBuffer("[INFO]    : ", INFO))
+					 ->setNext( new LoggerBuffer("[WARNING] : ", WARNING))
+					 ->setNext( new LoggerBuffer("[ERROR]   : ", ERROR));
+
+	Logger::getInstance()->setBuffer(buf);
+
 	Server s;
 	s.doWork();
 

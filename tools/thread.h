@@ -12,11 +12,13 @@
 
 class ThreadPrivate;
 
-class Thread
+class Thread : public Loggable
 {
 public:
 	explicit Thread();
 	virtual ~Thread();
+
+	const std::string getName() const;
 
 	bool isFinished() const;
 	bool isRunning() const;

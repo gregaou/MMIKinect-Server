@@ -22,6 +22,9 @@ ModuleServer::~ModuleServer() {
 	}
 }
 
+const std::string ModuleServer::getName() const { return "ModuleServer"; }
+
+
 ModuleServer* ModuleServer::load(std::string fromPath) {
 	// Ouverture du dossier
 	DIR* directory = opendir(fromPath.c_str());
@@ -71,7 +74,7 @@ ModuleServer* ModuleServer::onNewPacket (Packet* p) {
 		try {
 			(*i)->onNewPacket(new Packet(*p));
 		} catch (ModuleException &e) {
-			io::err << e.what() << io::endl;
+			*this << ERROR << e.what() << std::endl;
 		}
 	}
 	return this;

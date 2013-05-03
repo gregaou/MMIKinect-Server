@@ -13,6 +13,8 @@ public:
 	ModuleThread(IModule* module, ModuleHandler* handler);
 	~ModuleThread();
 
+	const std::string getName() const;
+
 	ModuleThread* start(Packet* p);
 	void run ();
 private:

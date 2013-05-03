@@ -4,14 +4,18 @@
 #include <string>
 #include <set>
 
+#include "logger.h"
+
 class ModuleHandler;
 class Packet;
 
-class ModuleServer
+class ModuleServer : public Loggable
 {
 public:
 	ModuleServer ();
 	~ModuleServer ();
+
+	const std::string getName() const;
 
 	ModuleServer* addModuleHandler (ModuleHandler* module);
 	ModuleServer* onNewPacket (Packet* p);

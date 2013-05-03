@@ -30,7 +30,7 @@ FacialModule::FacialModule() : IModule() {
  * @param p Le packet reçu
  */
 void FacialModule::onNewPacket(Packet *p) {
-    if (!p) { io::warn << "Audio Module : Empty packet!" << io::endl; return; }
+		if (!p) { *this << WARNING << "Empty packet!" << std::endl; return; }
 
     uint16 action = p->getType() & 0x0F;
     uint16 type = p->getType() & 0xF0;
@@ -48,7 +48,7 @@ void FacialModule::onNewPacket(Packet *p) {
         onScoreRequest(p);
         break;
     default :
-        io::dbg << "Facial Module : Nothing to do (id=" << p->getId() << ")" << io::endl;
+				*this << DEBUG << "Facial Module : Nothing to do (id=" << p->getId() << ")" << std::endl;
         break;
     }
 }
