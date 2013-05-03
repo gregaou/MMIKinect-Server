@@ -10,6 +10,8 @@ TARGET = module
 TEMPLATE = lib
 CONFIG += staticlib
 
+QMAKE_LFLAGS += -Wl,--export-dynamic
+
 SOURCES += \
     moduleserver.cpp \
     modulehandler.cpp \

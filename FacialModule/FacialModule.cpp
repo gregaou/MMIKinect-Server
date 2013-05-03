@@ -18,15 +18,6 @@ extern "C" void destroy (IModule* module) {
 
 const std::string FacialModule::getName() const { return "Facial Module"; }
 
-FacialModule::FacialModule() : IModule() {
-
-    _faceRecognizer = createFisherFaceRecognizer();
-    _haar_cascade.load("haarcascade_frontalface_alt.xml");
-    loadCSVFile("FacesDB/faces.csv");
-    _faceRecognizer->train(_images, _labels);
-
-}
-
 /**
  * @brief FacialModule::onNewPacket
  * @param p Le packet reçu

@@ -12,9 +12,9 @@ SUBDIRS = \
 	FacialModule
 
 network.depends = tools
-module.depends = network tools
-app.depends = module network tools
-testApp.depends = module network tools
+module.depends = tools
+app.depends = module
 
-dummymodule.depends = module network tools
-AudioModule.depends = module network tools
+dummymodule.depends = module
+AudioModule.depends = module
+FacialModule.depends= module

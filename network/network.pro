@@ -10,6 +10,8 @@ TARGET = network
 TEMPLATE = lib
 CONFIG += staticlib
 
+QMAKE_LFLAGS += -Wl,--export-dynamic
+
 SOURCES += \
     tcpsocketserver.cpp \
     tcpsocket.cpp \

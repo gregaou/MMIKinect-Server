@@ -24,9 +24,6 @@ using namespace cv;
 class FacialModule : public IModule {
 
 public:
-    FacialModule();
-    ~FacialModule();
-	
 		const std::string getName() const;
 
     void onNewPacket(Packet* p);
@@ -44,7 +41,6 @@ private:
     vector<Mat> _images;
     vector<int> _labels;
     map<int, string> _names;
-    CascadeClassifier _haar_cascade;
     int getFilesCount(string dir);
     int keyFromValue(string name);
     bool dirExists(string dirName);

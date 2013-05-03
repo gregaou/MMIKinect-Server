@@ -15,9 +15,7 @@ int main()
 	p.setVersion(PACKET_VERSION)->setType(BROADCAST_TYPE | LISTING_REQUEST)->setId(0x0001)->setData(new uint8[1],1);
 
 	ModuleServer m;
-	for (int i = 0; i < 10; ++i) {
-		m.onNewPacket(&p);
-	}
+	m.onNewPacket(&p);
 
 //	Server s;
 //	s.doWork();

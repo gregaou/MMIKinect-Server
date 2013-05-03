@@ -10,6 +10,8 @@ TARGET = tools
 TEMPLATE = lib
 CONFIG += staticlib
 
+QMAKE_LFLAGS += -Wl,--export-dynamic
+
 SOURCES += \
     logger.cpp \
     threadprivate.cpp \

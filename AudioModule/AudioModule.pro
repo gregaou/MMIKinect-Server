@@ -9,6 +9,8 @@ QT       -= core gui
 TARGET = AudioModule
 TEMPLATE = lib
 
+QMAKE_LFLAGS += -Wl,--export-dynamic
+
 SOURCES += audiomodule.cpp \
     audiosample.cpp
 

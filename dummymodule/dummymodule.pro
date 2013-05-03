@@ -9,6 +9,8 @@ QT       -= core gui
 TARGET = dummymodule
 TEMPLATE = lib
 
+QMAKE_LFLAGS += -Wl,--export-dynamic
+
 SOURCES += \
     test.cpp
 

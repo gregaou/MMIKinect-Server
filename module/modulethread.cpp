@@ -11,7 +11,11 @@ ModuleThread::~ModuleThread() {
 	if (_packet) delete _packet;
 }
 
-const std::string ModuleThread::getName() const { return "ModuleThread"; }
+const std::string ModuleThread::getName() const {
+	std::ostringstream stream;
+	stream << "Module Thread(" << _module->getName() << ")" ;
+	return stream.str();
+}
 
 void ModuleThread::run() {
 	try {

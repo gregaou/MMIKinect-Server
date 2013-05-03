@@ -9,6 +9,8 @@ QT       -= core gui
 TARGET = FacialModule
 TEMPLATE = lib
 
+QMAKE_LFLAGS += -Wl,--export-dynamic
+
 INCLUDEPATH += \
                 ../tools/ \
                 ../network/ \
