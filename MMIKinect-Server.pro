@@ -9,7 +9,8 @@ SUBDIRS = \
 	app \
 	dummymodule \
 	AudioModule \
-	FacialModule
+	FacialModule \
+    HistogramModule
 
 network.depends = tools
 module.depends = tools

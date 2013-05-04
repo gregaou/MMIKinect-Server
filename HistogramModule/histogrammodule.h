@@ -1,19 +1,17 @@
-#ifndef AUDIOMODULE_H
-#define AUDIOMODULE_H
-
-#include <algorithm>
+#ifndef HISTOGRAMMODULE_H
+#define HISTOGRAMMODULE_H
 
 #include "imodule.h"
 #include "packet/trainpacket.h"
 #include "packet/scorepacket.h"
 #include "packet/listpacket.h"
 
-#include "audiosample.h"
+#include "histogramrecognizer.h"
 
-class AudioModule : public IModule
+class HistogramModule : public IModule
 {
 public:
-	AudioModule() : IModule() {}
+	HistogramModule() : IModule() {}
 
 	const std::string getName() const;
 
@@ -24,4 +22,4 @@ private:
 	void onListRequest(Packet* p);
 };
 
-#endif // AUDIOMODULE_H
+#endif // HISTOGRAMMODULE_H
