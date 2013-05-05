@@ -30,8 +30,8 @@
 
 #include <alize.h>
 
-#include "typedef.h"
-#include "packet/score.h"
+#include "tools/typedef.h"
+#include "network/packet/score.h"
 
 using namespace std;
 using namespace alize;
@@ -65,6 +65,7 @@ private:
 	uint8* _data; /*!< Un tableau de données correspondant au contenu audio.*/
 	int _size; /*!< La taille du tableau de données (necesaire pour la lecture/ecriture de fichier).*/
 	AudioFormat _format; /*!< Le format des données audio de cette instance.*/
+	string _folder;
 
 	/**
 	 * \brief Charge les données d'un fichier.
@@ -171,7 +172,7 @@ public:
 	 * \param size La taille du tableau de données.
 	 * \param format Le format audio des données.
 	 */
-	AudioSample(uint8* data, int size, AudioFormat format);
+	AudioSample(uint8* data, int size, AudioFormat format, string folder = "./");
 	/**
 	 * \brief Constructeur
 	 *
@@ -182,7 +183,7 @@ public:
 	 * \param filename Le nom du fichier à charger
 	 * \param format Le format audio du fichier.
 	 */
-	AudioSample(string filename, AudioFormat format);
+	AudioSample(string filename, AudioFormat format, string folder = "./");
 	/**
 	 * \brief Destructeur
 	 *

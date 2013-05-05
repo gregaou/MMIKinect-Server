@@ -5,9 +5,9 @@
 #include <sstream>
 #include <vector>
 
-#include "typedef.h"
-#include "logger.h"
-#include "tcpsocket.h"
+#include "tools/typedef.h"
+#include "tools/logger.h"
+#include "network/tcpsocket.h"
 
 #define PACKET_VERSION 0x01
 

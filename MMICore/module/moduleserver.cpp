@@ -2,10 +2,10 @@
 
 #include <dirent.h>
 
-#include "logger.h"
-#include "packet/packet.h"
-#include "moduleexception.h"
-#include "modulehandler.h"
+#include "tools/logger.h"
+#include "network/packet/packet.h"
+#include "module/moduleexception.h"
+#include "module/modulehandler.h"
 
 ModuleServer::ModuleServer() : _modules(0)
 {

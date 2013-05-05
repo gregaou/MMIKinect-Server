@@ -2,7 +2,8 @@
 
 ClientThread::ClientThread(int socketDescriptor) :
 	Thread(),
-	_socketDescriptor(socketDescriptor)
+	_socketDescriptor(socketDescriptor),
+	_moduleServer(0)
 {}
 
 ClientThread::~ClientThread () {

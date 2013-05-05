@@ -17,15 +17,9 @@ SOURCES += \
 HEADERS += \
     test.h
 
-INCLUDEPATH += \
-		../tools/ \
-		../network/ \
-		../module/
+INCLUDEPATH += ../MMICore/
 
-LIBS += \
-		../tools/libtools.a \
-		../network/libnetwork.a \
-		../module/libmodule.a
+LIBS += ../libMMICore.a
 
 LIBS += -ldl
 

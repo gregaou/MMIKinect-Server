@@ -1,11 +1,10 @@
 #ifndef TEST_H
 #define TEST_H
 
-#include "logger.h"
-#include "imodule.h"
-#include "packet/packet.h"
-
-#include "moduleexception.h"
+#include "tools/logger.h"
+#include "network/packet/packet.h"
+#include "module/imodule.h"
+#include "module/moduleexception.h"
 
 class Test : public IModule
 {

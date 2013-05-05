@@ -1,7 +1,7 @@
 #ifndef INETWORKMESSAGE_H
 #define INETWORKMESSAGE_H
 
-#include "typedef.h"
+#include "tools/typedef.h"
 
 class INetworkMessage {
 public:

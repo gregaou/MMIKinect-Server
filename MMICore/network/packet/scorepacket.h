@@ -1,18 +1,20 @@
 #ifndef SCOREPACKET_H
 #define SCOREPACKET_H
 
-#include "packet/packet.h"
-#include "packet/score.h"
+#include "network/packet/packet.h"
+#include "network/packet/score.h"
 
 class ScoreRequestPacket : public Packet
 {
 public:
+	ScoreRequestPacket(int socket);
 	ScoreRequestPacket (Packet* p);
 };
 
 class ScoreResultPacket : public Packet
 {
 public:
+	ScoreResultPacket(int socket);
 	ScoreResultPacket(Packet* p);
 	~ScoreResultPacket();
 	ScoringVector* getScoringVector ();

@@ -7,8 +7,8 @@
 
 #include "histogram.h"
 
-#include "typedef.h"
-#include "packet/score.h"
+#include "tools/typedef.h"
+#include "network/packet/score.h"
 
 #define CSV_FILE "histogram.csv"
 
@@ -24,19 +24,21 @@ typedef struct {
 class HistogramRecognizer
 {
 public:
-	HistogramRecognizer(uint8* data, int size);
-	HistogramRecognizer(string filename);
+	HistogramRecognizer(uint8* data, int size, string folder = "./");
+	HistogramRecognizer(string filename, string folder = "./");
+
 	HistogramRecognizer* doTrain (string id);
 	HistogramRecognizer* doTest  ();
 	ScoringVector* getScoring();
 
-	static PeopleVector* getPeopleVector ();
+	static PeopleVector* getPeopleVector (string folder = "./");
 	vector<HistoPerson> getHistoPeople ();
 	HistoPerson getHistoPerson (string id);
 
 	HistogramRecognizer* updateRecord(HistoPerson person);
 
 private:
+	string _folder;
 	Histogram _histogram;
 	ScoringVector* _scoring;
 };

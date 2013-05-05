@@ -5,10 +5,10 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#include "logger.h"
-#include "modulehandler.h"
-#include "moduleserver.h"
-#include "tcpsocketserver.h"
+#include "tools/logger.h"
+#include "network/tcpsocketserver.h"
+#include "module/modulehandler.h"
+#include "module/moduleserver.h"
 #include "clientthread.h"
 
 class Server : public Loggable

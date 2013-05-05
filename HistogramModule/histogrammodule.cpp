@@ -37,38 +37,74 @@ void HistogramModule::onNewPacket(Packet *p) {
 void HistogramModule::onTrainRequest(Packet* p) {
 	TrainRequestPacket trp(p);
 	if (!trp.getTrainDataSize()) {
-		*this << WARNING << "data size = 0 (id=" << trp.getId() << ")" << std::endl;
+		*this << WARNING << "data size = 0"
+										 << " (id=" << trp.getId() << ")" << std::endl;
 		return;
 	}
-	*this << DEBUG << "Train request for "
-								 << "\"" << trp.getPerson()->getId() << "\"" << std::endl;
+	*this << DEBUG << "Train request for \"" << trp.getPerson()->getId() << "\""
+								 << " (id=" << p->getId() << ")" << std::endl;
 
 	std::string id = trp.getPerson()->getId();
 	std::replace(id.begin(), id.end(), ' ', '_');
 
-	HistogramRecognizer hr(trp.getTrainData(), trp.getTrainDataSize());
-	hr.doTrain(id);
+	*this << DEBUG << "Creating Histogram Recognizer "
+								 << "(id=" << p->getId() << ")" << std::endl;
+	HistogramRecognizer hr(trp.getTrainData(), trp.getTrainDataSize(), getFolder());
+	*this << DEBUG << "Created"
+								 << " (id=" << p->getId() << ")" << std::endl;
 
+	*this << DEBUG << "Starting training"
+								 << " (id=" << p->getId() << ")" << std::endl;
+	hr.doTrain(id);
+	*this << DEBUG << "Training done"
+								 << " (id=" << p->getId() << ")" << std::endl;
+
+	*this << DEBUG << "Creating answer"
+								 << " (id=" << p->getId() << ")" << std::endl;
 	TrainResultPacket reponse(&trp);
+	*this << DEBUG << "Sending answer"
+								 << " (id=" << p->getId() << ")" << std::endl;
 	reponse.doSend();
+	*this << DEBUG << "Answer sent"
+								 << " (id=" << p->getId() << ")" << std::endl;
 }
 
 void HistogramModule::onScoreRequest(Packet* p) {
 	ScoreRequestPacket srp(p);
 	if (!srp.getBodySize()) {
-		*this << WARNING << "data size = 0 (id=" << srp.getId() << ")" << std::endl;
+		*this << WARNING << "data size = 0"
+										 << " (id=" << p->getId() << ")" << std::endl;
 		return;
 	}
-	*this << DEBUG << "Score request (id=" << srp.getId() << ")" << std::endl;
+	*this << DEBUG << "Score request"
+								 << " (id=" << p->getId() << ")" << std::endl;
 
-	HistogramRecognizer hr(srp.getData(), srp.getBodySize());
+	*this << DEBUG << "Creating Histogram Recognizer "
+								 << "(id=" << p->getId() << ")" << std::endl;
+	HistogramRecognizer hr(srp.getData(), srp.getBodySize(), getFolder());
+	*this << DEBUG << "Created"
+								 << " (id=" << p->getId() << ")" << std::endl;
+
+	*this << DEBUG << "Starting Scoring"
+								 << " (id=" << p->getId() << ")" << std::endl;
 	hr.doTest();
+	*this << DEBUG << "TScoringing done"
+								 << " (id=" << p->getId() << ")" << std::endl;
 
+	*this << DEBUG << "Creating answer"
+								 << " (id=" << p->getId() << ")" << std::endl;
 	ScoreResultPacket reponse(&srp);
+	*this << DEBUG << "Sending answer"
+								 << " (id=" << p->getId() << ")" << std::endl;
 	reponse.setScoringVector(hr.getScoring())->doSend();
+	*this << DEBUG << "Answer sent"
+								 << " (id=" << p->getId() << ")" << std::endl;
 }
 
 void HistogramModule::onListRequest(Packet* p) {
+	*this << DEBUG << "Creating answer (id=" << p->getId() << ")" << std::endl;
 	ListResultPacket lrp(p);
-	lrp.setPeopleVector(HistogramRecognizer::getPeopleVector())->doSend();
+	*this << DEBUG << "Sending answer (id=" << p->getId() << ")" << std::endl;
+	lrp.setPeopleVector(HistogramRecognizer::getPeopleVector(getFolder()))->doSend();
+	*this << DEBUG << "Answer sent (id=" << p->getId() << ")" << std::endl;
 }

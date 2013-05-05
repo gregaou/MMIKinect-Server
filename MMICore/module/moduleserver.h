@@ -4,7 +4,7 @@
 #include <string>
 #include <set>
 
-#include "logger.h"
+#include "tools/logger.h"
 
 class ModuleHandler;
 class Packet;

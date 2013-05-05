@@ -3,19 +3,8 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = \
-	tools \
-	network \
-	module \
+	MMICore \
 	app \
-	dummymodule \
 	AudioModule \
 	FacialModule \
-    HistogramModule
-
-network.depends = tools
-module.depends = tools
-app.depends = module
-
-dummymodule.depends = module
-AudioModule.depends = module
-FacialModule.depends= module
+	HistogramModule

@@ -1,8 +1,8 @@
 #include "FacialModule.h"
-#include "packet/scorepacket.h"
-#include "packet/listpacket.h"
-#include "packet/trainpacket.h"
-#include "packet/person.h"
+#include "network/packet/scorepacket.h"
+#include "network/packet/listpacket.h"
+#include "network/packet/trainpacket.h"
+#include "network/packet/person.h"
 
 #include <fstream>
 #include <iostream>

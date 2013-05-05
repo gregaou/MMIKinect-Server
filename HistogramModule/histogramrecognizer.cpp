@@ -1,19 +1,19 @@
 #include "histogramrecognizer.h"
 
-HistogramRecognizer::HistogramRecognizer(uint8* data, int size)
-	: _histogram(data,size), _scoring(0) {}
+HistogramRecognizer::HistogramRecognizer(uint8* data, int size, string folder)
+	: _folder(folder), _histogram(data,size), _scoring(0) {}
 
-HistogramRecognizer::HistogramRecognizer(string filename)
-	: _histogram(filename), _scoring(0) {}
+HistogramRecognizer::HistogramRecognizer(string filename, string folder)
+	: _folder(folder), _histogram(filename), _scoring(0) {}
 
 HistogramRecognizer* HistogramRecognizer::doTrain (string id) {
 	HistoPerson person = getHistoPerson(id);
 	if (person.name != "" && person.filename != "") {
-		Histogram h(person.filename);
+		Histogram h(_folder + person.filename);
 		double weight = 1/(1+((double)person.size));
 		h.update(_histogram, weight);
 		person.size ++;
-		h.saveToFile(person.filename);
+		h.saveToFile(_folder + person.filename);
 	} else {
 		person.name = id;
 		person.filename = id + ".yaml";
@@ -21,7 +21,7 @@ HistogramRecognizer* HistogramRecognizer::doTrain (string id) {
 			person.filename[i] = tolower(person.filename[i]);
 		}
 		person.size = 1;
-		_histogram.saveToFile(person.filename);
+		_histogram.saveToFile(_folder + person.filename);
 	}
 	updateRecord(person);
 
@@ -32,7 +32,7 @@ HistogramRecognizer* HistogramRecognizer::doTest  () {
 	vector<HistoPerson> vec = getHistoPeople();
 
 	for (uint i = 0; i < vec.size(); ++i) {
-		Histogram h(vec.at(i).filename);
+		Histogram h(_folder + vec.at(i).filename);
 		getScoring()->push_back(Score(vec.at(i).name, h.compare(_histogram)));
 	}
 
@@ -46,8 +46,9 @@ ScoringVector* HistogramRecognizer::getScoring() {
 	return _scoring;
 }
 
-PeopleVector* HistogramRecognizer::getPeopleVector () {
-	fstream csv(CSV_FILE);
+PeopleVector* HistogramRecognizer::getPeopleVector (string folder) {
+	string csvFile = folder + CSV_FILE;
+	fstream csv(csvFile.c_str());
 	string id;
 	string line;
 	PeopleVector* result = new PeopleVector();
@@ -63,7 +64,8 @@ PeopleVector* HistogramRecognizer::getPeopleVector () {
 }
 
 vector<HistoPerson> HistogramRecognizer::getHistoPeople () {
-	fstream csv(CSV_FILE);
+	string csvFile = _folder + CSV_FILE;
+	fstream csv(csvFile.c_str());
 	string line;
 	vector<HistoPerson> result;
 
@@ -71,7 +73,9 @@ vector<HistoPerson> HistogramRecognizer::getHistoPeople () {
 		istringstream l(line);
 		HistoPerson person;
 		getline(l,person.name,';');
-		getline(l,person.filename,';');
+		string filename;
+		getline(l,filename,';');
+		person.filename = filename;
 		string size;
 		getline(l,size);
 		person.size = atoi(size.c_str());
@@ -83,7 +87,8 @@ vector<HistoPerson> HistogramRecognizer::getHistoPeople () {
 }
 
 HistoPerson HistogramRecognizer::getHistoPerson (string id) {
-	fstream csv(CSV_FILE);
+	string csvFile = _folder + CSV_FILE;
+	fstream csv(csvFile.c_str());
 	string line;
 	string name;
 	HistoPerson person;
@@ -97,7 +102,9 @@ HistoPerson HistogramRecognizer::getHistoPerson (string id) {
 		getline(l,name,';');
 		if (name == id) {
 			person.name = name;
-			getline(l,person.filename,';');
+			string filename;
+			getline(l,filename,';');
+			person.filename = filename;
 			string size;
 			getline(l,size);
 			person.size = atoi(size.c_str());
@@ -111,7 +118,8 @@ HistoPerson HistogramRecognizer::getHistoPerson (string id) {
 
 
 HistogramRecognizer* HistogramRecognizer::updateRecord(HistoPerson p) {
-	fstream csv(CSV_FILE);
+	string csvFile = _folder + CSV_FILE;
+	fstream csv(csvFile.c_str());
 	ostringstream out;
 	string line;
 	string id;
@@ -131,7 +139,7 @@ HistogramRecognizer* HistogramRecognizer::updateRecord(HistoPerson p) {
 		out << p.name << ";" << p.filename << ";" << p.size << endl;
 	}
 	csv.close();
-	csv.open(CSV_FILE, ios_base::out | ios_base::trunc);
+	csv.open(csvFile.c_str(), ios_base::out | ios_base::trunc);
 	csv << out.str();
 	csv.close();
 

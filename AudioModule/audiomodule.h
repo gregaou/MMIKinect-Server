@@ -3,10 +3,10 @@
 
 #include <algorithm>
 
-#include "imodule.h"
-#include "packet/trainpacket.h"
-#include "packet/scorepacket.h"
-#include "packet/listpacket.h"
+#include "module/imodule.h"
+#include "network/packet/trainpacket.h"
+#include "network/packet/scorepacket.h"
+#include "network/packet/listpacket.h"
 
 #include "audiosample.h"
 

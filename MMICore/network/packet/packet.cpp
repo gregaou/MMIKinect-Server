@@ -124,26 +124,31 @@ Packet* Packet::doReadHeader() throw (NetworkException){
 Packet* Packet::doReadData () {
 	uint32 length = getBodySize();
 	_pData = new uint8[length];
-	*this << DEBUG << "Reading data. Length : " << length << std::endl;
-	_pSocket.readBuffer(_pData, length);
+	if (length != 0) {
+		*this << DEBUG << "Reading data. Length : " << length << std::endl;
+		_pSocket.readBuffer(_pData, length);
+	}
 	return this;
 }
 
 Packet* Packet::doSend () {
-	int size = _headerSize + getBodySize();
-	uint8 message[size];
+	*this << DEBUG << "Creating packet" << std::endl;
+	int length = _headerSize + _bodySize;
+	uint8 message[length];
 	uint8* index = message;
 
-	uint8 version = getVersion();
+	uint8 version = _version;
 	memcpy(index, &version, sizeof(uint8)); index += sizeof(uint8);
-	uint8 type = getType();
+	uint8 type = _type;
 	memcpy(index, &type, sizeof(uint8)); index += sizeof(uint8);
-	uint16 id = getId();
+	uint16 id = _id;
 	memcpy(index, &id, sizeof(uint16)); index += sizeof(uint16);
-	uint32 bodySize = getBodySize();
+	uint32 bodySize = _bodySize;
 	memcpy(index, &bodySize, sizeof(uint32)); index += sizeof(uint32);
-	memcpy(index, getData(), sizeof(uint8) * getBodySize());
-	_pSocket.writeBuffer(message,size);
+	if (_pData)
+		memcpy(index, _pData, sizeof(uint8) * _bodySize);
+	*this << DEBUG << "Writing data. Length : " << length << std::endl;
+	_pSocket.writeBuffer(message,length);
 
 	return this;
 }

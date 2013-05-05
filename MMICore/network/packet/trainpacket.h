@@ -1,8 +1,8 @@
 #ifndef TRAINREQUESTPACKET_H
 #define TRAINREQUESTPACKET_H
 
-#include "packet/packet.h"
-#include "packet/person.h"
+#include "network/packet/packet.h"
+#include "network/packet/person.h"
 
 class TrainRequestPacket : public Packet
 {
@@ -30,6 +30,7 @@ class TrainResultPacket : public Packet
 {
 public:
 	TrainResultPacket (Packet* p);
+	TrainResultPacket(int socket);
 };
 
 #endif // TRAINREQUESTPACKET_H

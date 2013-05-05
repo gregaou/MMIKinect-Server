@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "inetworkmessage.h"
+#include "network/packet/inetworkmessage.h"
 
 template <class T>
 class NetworkVector : public std::vector<T>, public INetworkMessage

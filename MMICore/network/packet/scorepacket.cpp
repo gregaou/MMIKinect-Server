@@ -1,10 +1,18 @@
 #include "scorepacket.h"
 
+ScoreRequestPacket::ScoreRequestPacket(int socket)
+	: Packet(socket) {}
+
 ScoreRequestPacket::ScoreRequestPacket(Packet *p)
 	: Packet(*p) {}
 
+ScoreResultPacket::ScoreResultPacket(int socket)
+	: Packet(socket), _vector(0)
+{ setType((getType() & 0xF0) | SCORING_RESULT ); }
+
 ScoreResultPacket::ScoreResultPacket(Packet *p)
-	: Packet(*p), _vector(0) { setType(getType() ^ 0x01); }
+	: Packet(*p), _vector(0)
+{ setType((getType() & 0xF0) | SCORING_RESULT ); }
 
 ScoreResultPacket::~ScoreResultPacket() {
 	if (_vector)

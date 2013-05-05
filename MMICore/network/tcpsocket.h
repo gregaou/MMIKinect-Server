@@ -10,8 +10,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#include "typedef.h"
-#include "networkexception.h"
+#include "tools/typedef.h"
+#include "network/networkexception.h"
 
 #define PORT_DEFAULT 1337
 #define INVALID_SOCKET		-1

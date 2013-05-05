@@ -4,9 +4,9 @@
 #include <string>
 #include <cstring>
 
-#include "typedef.h"
-#include "inetworkmessage.h"
-#include "networkvector.h"
+#include "tools/typedef.h"
+#include "network/packet/inetworkmessage.h"
+#include "network/packet/networkvector.h"
 
 class Person : public INetworkMessage
 {

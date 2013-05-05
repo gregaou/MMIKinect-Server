@@ -1,7 +1,7 @@
 #ifndef MODULETHREAD_H
 #define MODULETHREAD_H
 
-#include "thread.h"
+#include "tools/thread.h"
 
 class IModule;
 class Packet;

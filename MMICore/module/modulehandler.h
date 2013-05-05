@@ -4,6 +4,11 @@
 #include <set>
 #include <string>
 
+#include <dlfcn.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+
 class Packet;
 class IModule;
 class ModuleThread;
@@ -26,6 +31,8 @@ private:
 	void* getLibraryPointer ();
 	create_t* getModuleConstructor ();
 	destroy_t* getModuleDestructor ();
+
+	std::string getModuleFolder ();
 
 	std::set<ModuleThread*>* getThreads();
 

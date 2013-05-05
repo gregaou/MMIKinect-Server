@@ -3,8 +3,8 @@
 
 #include <pthread.h>
 
-#include "thread.h"
-#include "typedef.h"
+#include "tools/thread.h"
+#include "tools/typedef.h"
 
 class ThreadPrivate
 {

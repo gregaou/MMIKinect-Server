@@ -46,7 +46,7 @@ void AudioModule::onTrainRequest(Packet* p) {
 	std::string id = trp.getPerson()->getId();
 	std::replace(id.begin(), id.end(), ' ', '_');
 
-	AudioSample sample(trp.getTrainData(), trp.getTrainDataSize(), AUDIO_FORMAT_WAVE);
+	AudioSample sample(trp.getTrainData(), trp.getTrainDataSize(), AUDIO_FORMAT_WAVE, getFolder());
 	sample.doTrain(id);
 
 	TrainResultPacket reponse(&trp);
@@ -61,7 +61,7 @@ void AudioModule::onScoreRequest(Packet* p) {
 	}
 	*this << DEBUG << "Score request (id=" << srp.getId() << ")" << std::endl;
 
-	AudioSample sample(srp.getData(), srp.getBodySize(), AUDIO_FORMAT_WAVE);
+	AudioSample sample(srp.getData(), srp.getBodySize(), AUDIO_FORMAT_WAVE, getFolder());
 	sample.doTest()->getScoring();
 
 	ScoreResultPacket reponse(&srp);

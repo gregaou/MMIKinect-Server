@@ -7,8 +7,8 @@
 #include <unistd.h>
 #include <stdio.h>
 
-#include "logger.h"
-#include "threadprivate.h"
+#include "tools/logger.h"
+#include "tools/threadprivate.h"
 
 class ThreadPrivate;
 

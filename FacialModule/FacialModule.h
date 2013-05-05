@@ -6,9 +6,10 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/objdetect/objdetect.hpp"
-#include "logger.h"
-#include "imodule.h"
-#include "packet/packet.h"
+
+#include "tools/logger.h"
+#include "module/imodule.h"
+#include "network/packet/packet.h"
 
 #include <vector>
 #include <map>

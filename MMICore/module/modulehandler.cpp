@@ -1,10 +1,9 @@
 #include "modulehandler.h"
 
-#include <dlfcn.h>
-
-#include "moduleexception.h"
-#include "moduleserver.h"
-#include "modulethread.h"
+#include "module/imodule.h"
+#include "module/moduleexception.h"
+#include "module/moduleserver.h"
+#include "module/modulethread.h"
 
 ModuleHandler::ModuleHandler (std::string libraryPath, ModuleServer* server) :
 	_libraryPath(libraryPath),
@@ -96,6 +95,27 @@ destroy_t* ModuleHandler::getModuleDestructor () {
 IModule* ModuleHandler::getModuleInstance () {
 	if (!_moduleInstance) {
 		_moduleInstance = getModuleConstructor()();
+		_moduleInstance->setFolder(getModuleFolder());
 	}
 	return _moduleInstance;
+}
+
+std::string ModuleHandler::getModuleFolder () {
+	std::string folder = "./module/";
+
+	int start = _libraryPath.find_last_of('/') + 4;
+
+	std::string f = folder +
+									_libraryPath.substr(start,
+																			_libraryPath.find_last_of('.') - start) + "/";
+
+	DIR* dir = opendir(f.c_str());
+	if (dir == NULL) {
+		if (mkdir(f.c_str(), S_IRWXG | S_IRWXO | S_IRWXU) == -1)
+			throw ModuleException("Unable to create module folder",-1);
+	}
+	else
+		closedir(dir);
+
+	return f;
 }

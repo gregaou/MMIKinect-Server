@@ -1,10 +1,15 @@
 #include "audiosample.h"
 
-AudioSample::AudioSample(uint8* data, int size, AudioFormat format)
-    : _scoring(0), _data(data), _size(size), _format(format) {}
+AudioSample::AudioSample(uint8* data, int size, AudioFormat format, string folder)
+	: _scoring(0), _size(size), _format(format), _folder(folder)
+{
+	_data = new uint8[size];
+	memcpy(_data, data, size);
+}
 
-AudioSample::AudioSample(string filename, AudioFormat format)
-    : _scoring(0), _data(0), _format(format) {
+AudioSample::AudioSample(string filename, AudioFormat format, string folder)
+		: _scoring(0), _data(0), _format(format), _folder(folder)
+{
     doLoadDataFromFile(filename);
 }
 
@@ -13,7 +18,7 @@ AudioSample::~AudioSample() {
 }
 
 AudioSample* AudioSample::doLoadDataFromFile(string filename) {
-    if (_data) delete(_data);
+		if (_data) delete[] _data;
 
     ifstream input(filename.c_str(), ios::in|ios::binary|ios::ate);
     _size = input.tellg();
@@ -97,7 +102,7 @@ AudioSample* AudioSample::doNormFeat() {
     string inFile = "/tmp/in.prm";
     string outFile = inFile;
     string outPath = "/tmp/";
-    string params = "--config ./cfg/NormFeat.cfg";
+		string params = "--config " + _folder + "cfg/NormFeat.cfg";
     string exec = "/usr/local/bin/NormFeat";
     stringstream cmd;
     cmd << exec
@@ -123,9 +128,9 @@ AudioSample* AudioSample::doComputeTest() {
     string exec = "/usr/local/bin/ComputeTest";
     string params = "--config cfg/computeTest.cfg";
     string outFile = "/tmp/out.res";
-    string ndxFile = "./ndx/testing.ndx";
-    string ndxList = "./ndx/list.ndx";
-    string normFile = "./prm/testing.norm.prm";
+		string ndxFile = _folder + "ndx/testing.ndx";
+		string ndxList = _folder + "ndx/list.ndx";
+		string normFile = _folder + "prm/testing.norm.prm";
 
     stringstream cmd;
     cmd << exec
@@ -177,9 +182,9 @@ AudioSample* AudioSample::doTrainTarget(string person) {
     if (_format != AUDIO_FORMAT_NORM_PRM) return this;
 
     stringstream personDir;
-    personDir << "./prm/" << person << "/";
+		personDir << _folder << "prm/" << person << "/";
     stringstream ndxFile;
-    ndxFile << "./ndx/" << person << ".ndx";
+		ndxFile << _folder << "ndx/" << person << ".ndx";
 
     DIR* dir = opendir(personDir.str().c_str());
     if (dir == NULL) {
@@ -188,7 +193,8 @@ AudioSample* AudioSample::doTrainTarget(string person) {
         ndx << person;
         ndx.close();
         dir = opendir(personDir.str().c_str());
-        ofstream list("./ndx/list.ndx", ios::app);
+				string f(_folder + "ndx/list.ndx");
+				ofstream list(f.c_str(), ios::app);
         list << " " << person;
         list.close();
     }
@@ -199,7 +205,7 @@ AudioSample* AudioSample::doTrainTarget(string person) {
 
     stringstream trainFile;
     trainFile << personDir.str() << person << "-" << i << ".norm.prm";
-    string params = "--config ./cfg/trainTarget.cfg --inputWorldFilename ./gmm/world_independent_512.gmm";
+		string params = "--config " + _folder + "cfg/trainTarget.cfg --inputWorldFilename " + _folder + "gmm/world_independent_512.gmm";
     string exec = "/usr/local/bin/TrainTarget";
     stringstream cmd;
     cmd << exec

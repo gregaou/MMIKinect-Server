@@ -11,5 +11,8 @@ extern "C" void destroy (IModule* module) {
 const std::string Test::getName() const { return "Dummy Module"; }
 
 void Test::onNewPacket(Packet *p)  {
-	throw ModuleException("False alarm!!", 0);
+	*this << DEBUG << "This is the module " << getName() << endl;
+	*this << DEBUG << "Its associated folder is " << getFolder() << endl;
+
+	throw ModuleException("Throwing exception form within a module", 0);
 }

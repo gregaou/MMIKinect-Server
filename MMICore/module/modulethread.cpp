@@ -1,8 +1,8 @@
 #include "modulethread.h"
 
-#include "packet/packet.h"
-#include "imodule.h"
-#include "modulehandler.h"
+#include "network/packet/packet.h"
+#include "module/imodule.h"
+#include "module/modulehandler.h"
 
 ModuleThread::ModuleThread(IModule *module, ModuleHandler *handler)
 	: _module(module), _parent(handler) {}
@@ -21,7 +21,7 @@ void ModuleThread::run() {
 	try {
 		_module->onNewPacket(_packet);
 	} catch (std::exception &e) {
-		*this << ERROR << "Error while running thread : " << e.what() << std::endl;
+		*this << ERROR << e.what() << std::endl;
 	}
 	_parent->onThreadFinished();
 }

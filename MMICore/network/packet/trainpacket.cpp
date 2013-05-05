@@ -70,5 +70,9 @@ TrainRequestPacket* TrainRequestPacket::doUpdateData() {
 
 TrainResultPacket::TrainResultPacket (Packet* p) : Packet(*p)
 {
-	setType(getType() ^ 0x01)->setData(NULL);
+	setType((getType() & 0xF0) | TRAINING_RESULT )->setData();
+}
+
+TrainResultPacket::TrainResultPacket(int socket) : Packet(socket) {
+	setType((getType() & 0xF0) | TRAINING_RESULT )->setData();
 }

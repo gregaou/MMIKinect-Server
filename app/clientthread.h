@@ -1,9 +1,9 @@
 #ifndef CLIENTTHREAD_H
 #define CLIENTTHREAD_H
 
-#include "thread.h"
+#include "tools/thread.h"
+#include "network/packet/packet.h"
 #include "server.h"
-#include "packet/packet.h"
 
 class ClientThread : public Thread {
 public:

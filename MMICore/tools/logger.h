@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "singleton.h"
+#include "tools/singleton.h"
 
 using namespace std;
 
