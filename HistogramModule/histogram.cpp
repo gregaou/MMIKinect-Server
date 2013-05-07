@@ -1,5 +1,7 @@
 #include "histogram.h"
 
+pthread_mutex_t* Histogram::_mutex = 0;
+
 Histogram::Histogram(Histogram& h)
 	: _histogram(h.getMatND().clone()) {}
 
@@ -7,9 +9,11 @@ Histogram::Histogram(const char* file) {
 	string filename(file);
 	string extension = filename.substr(filename.find_last_of('.'));
 	if (extension == ".xml" || extension == ".yaml" || extension == "yml") {
+		lockMutex();
 		FileStorage fs(filename, FileStorage::READ);
 		fs["histogram"] >> _histogram;
 		fs.release();
+		unlockMutex();
 	} else {
 		_histogram = init(imread(filename));
 	}
@@ -18,9 +22,11 @@ Histogram::Histogram(const char* file) {
 Histogram::Histogram(string filename) {
 	string extension = filename.substr(filename.find_last_of('.'));
 	if (extension == ".xml" || extension == ".yaml" || extension == ".yml") {
+		lockMutex();
 		FileStorage fs(filename, FileStorage::READ);
 		fs["histogram"] >> _histogram;
 		fs.release();
+		unlockMutex();
 	} else {
 		_histogram = init(imread(filename));
 	}
@@ -66,9 +72,11 @@ Histogram* Histogram::saveToFile (const char* filename) {
 }
 
 Histogram* Histogram::saveToFile (string filename) {
+		lockMutex();
 	FileStorage fs(filename, FileStorage::WRITE);
 	fs << "histogram" << _histogram;
 	fs.release();
+	unlockMutex();
 
 	return this;
 }
@@ -92,4 +100,16 @@ double Histogram::compare(Histogram& h) {
 
 double Histogram::compare(MatND m) {
 	return compareHist(_histogram, m, CV_COMP_CHISQR);
+}
+
+void Histogram::lockMutex() {
+	if (!_mutex) {
+		_mutex = new pthread_mutex_t;
+		pthread_mutex_init(_mutex,NULL);
+	}
+	pthread_mutex_lock(_mutex);
+}
+
+void Histogram::unlockMutex() {
+	pthread_mutex_unlock(_mutex);
 }

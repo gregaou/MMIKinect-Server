@@ -219,6 +219,13 @@ public:
 	 * \return L'instance courante.
 	 */
 	AudioSample* doTrain(string person);
+
+	/**
+	 * \brief Retourne un vecteur des personnes précédemment enregistrées.
+	 * \param folder le dossier dans lequel les fichiers sont situés.
+	 * \return Un vecteur de personne. Peut etre vide.
+	 */
+	static PeopleVector* getPeopleVector (string folder);
 };
 
 #endif // AUDIOSAMPLE_H

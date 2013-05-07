@@ -4,18 +4,12 @@
 
 int main()
 {
-	LoggerBuffer* buf = new LoggerBuffer("[DEBUG]   : ", DEBUG);
+	LoggerBuffer* buf = new LoggerBuffer("[DEBUG]   : ", DEBUG, std::clog);
 	buf      ->setNext( new LoggerBuffer("[INFO]    : ", INFO))
 					 ->setNext( new LoggerBuffer("[WARNING] : ", WARNING))
-					 ->setNext( new LoggerBuffer("[ERROR]   : ", ERROR));
+					 ->setNext( new LoggerBuffer("[ERROR]   : ", ERROR, std::cerr));
 
 	Logger::getInstance()->setBuffer(buf);
-
-//	Packet p(0);
-//	p.setVersion(PACKET_VERSION)->setType(HISTOGRAM_TYPE | SCORING_REQUEST)->setId(0x0001)->setData(new uint8[1],1);
-
-//	ModuleServer m;
-//	m.onNewPacket(&p);
 
 	Server s;
 	s.doWork();

@@ -2,6 +2,7 @@
 #define HISTOGRAMRGB_H
 
 #include <string>
+#include <pthread.h>
 
 #include "tools/typedef.h"
 
@@ -29,12 +30,18 @@ public:
 	Histogram* saveToFile (string filename);
 
 	MatND getMatND ();
+
 	Histogram* update(Histogram& h, double weight);
 	Histogram* update(MatND m, double weight);
+
 	double compare(Histogram& h);
 	double compare(MatND m);
+
+	static void lockMutex();
+	static void unlockMutex();
 private:
 	MatND _histogram;
+	static pthread_mutex_t* _mutex;
 };
 
 #endif // HISTOGRAMRGB_H

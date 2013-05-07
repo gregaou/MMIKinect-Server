@@ -7,10 +7,8 @@
 #include "module/moduleexception.h"
 #include "module/modulehandler.h"
 
-ModuleServer::ModuleServer() : _modules(0)
-{
-	load();
-}
+ModuleServer::ModuleServer()
+	: _modules(0) { load(); }
 
 ModuleServer::~ModuleServer() {
 	if (_modules) {
@@ -24,8 +22,8 @@ ModuleServer::~ModuleServer() {
 
 const std::string ModuleServer::getName() const { return "ModuleServer"; }
 
-
 ModuleServer* ModuleServer::load(std::string fromPath) {
+	*this << DEBUG << "Loading modules" << endl;
 	// Ouverture du dossier
 	DIR* directory = opendir(fromPath.c_str());
 	if (directory != NULL) {
@@ -39,6 +37,7 @@ ModuleServer* ModuleServer::load(std::string fromPath) {
 				// On la charge
 				std::stringstream path;
 				path << fromPath.c_str() << filename;
+				*this << DEBUG << "Loading module : " << path.str() << endl;
 				addModuleHandler(new ModuleHandler(path.str(), this));
 			}
 		}
@@ -49,6 +48,7 @@ ModuleServer* ModuleServer::load(std::string fromPath) {
 }
 
 ModuleServer* ModuleServer::reload(std::string fromPath) {
+	*this << DEBUG << "Unloading modules" << endl;
 	getModuleHandlers()->clear();
 	return load(fromPath);
 }
@@ -68,6 +68,13 @@ std::set<ModuleHandler*>* ModuleServer::getModuleHandlers () {
 ModuleServer* ModuleServer::onNewPacket (Packet* p) {
 	// Make sure that there's some data to read.
 	p->getData();
+
+	if (p->getType() == (SERVER_RELOADING_REQUEST)) {
+		reload();
+		Packet result(*p);
+		result.setType(RELOADING_RESULT)->setData()->doSend();
+		return this;
+	}
 
 	for (std::set<ModuleHandler*>::iterator i = getModuleHandlers()->begin();
 			 i != getModuleHandlers()->end(); ++i) {

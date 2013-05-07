@@ -126,7 +126,7 @@ AudioSample* AudioSample::doComputeTest() {
     if (_format != AUDIO_FORMAT_NORM_PRM) return this;
 
     string exec = "/usr/local/bin/ComputeTest";
-    string params = "--config cfg/computeTest.cfg";
+		string params = "--config " + _folder + "cfg/computeTest.cfg";
     string outFile = "/tmp/out.res";
 		string ndxFile = _folder + "ndx/testing.ndx";
 		string ndxList = _folder + "ndx/list.ndx";
@@ -219,4 +219,21 @@ AudioSample* AudioSample::doTrainTarget(string person) {
     ndx.close();
     system(cmd.str().c_str());
     return this;
+}
+
+
+PeopleVector* AudioSample::getPeopleVector (string folder) {
+	PeopleVector* vec = new PeopleVector();
+	string filename(folder + "ndx/list.ndx");
+	ifstream csv(filename.c_str());
+
+	cout << "Reading file : " << filename << endl;
+
+	string name;
+	while (std::getline(csv,name,' ')) {
+		if (!name.empty())
+			vec->push_back(Person(name));
+	}
+
+	return vec;
 }

@@ -70,5 +70,5 @@ void AudioModule::onScoreRequest(Packet* p) {
 
 void AudioModule::onListRequest(Packet *p) {
 	ListResultPacket lrp(p);
-	lrp.setPeopleVector(new PeopleVector())->doSend();
+	lrp.setPeopleVector(AudioSample::getPeopleVector(getFolder()))->doSend();
 }
