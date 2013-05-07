@@ -6,8 +6,8 @@ Histogram::Histogram(Histogram& h)
 	: _histogram(h.getMatND().clone()) {}
 
 Histogram::Histogram(const char* file) {
-	string filename(file);
-	string extension = filename.substr(filename.find_last_of('.'));
+    string filename(file);
+    string extension = filename.substr(filename.find_last_of('.'));
 	if (extension == ".xml" || extension == ".yaml" || extension == "yml") {
 		lockMutex();
 		FileStorage fs(filename, FileStorage::READ);

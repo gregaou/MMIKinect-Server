@@ -25,27 +25,24 @@ using namespace cv;
 class FacialModule : public IModule {
 
 public:
-		const std::string getName() const;
 
+    FacialModule();
+    const string getName() const;
     void onNewPacket(Packet* p);
-	
+
 private:
 
     void loadCSVFile(const string &filename, char separator = ';');
-    void loadFaceRecognizer(const string& filename);
+    void loadFaceRecognizer(Ptr<FaceRecognizer> _faceRecognizer, const string& filename);
 
     void onListRequest(Packet *p);
     void onTrainRequest(Packet *p);
     void onScoreRequest(Packet *p);
 
-    Ptr<FaceRecognizer> _faceRecognizer;
-    vector<Mat> _images;
     vector<int> _labels;
     map<int, string> _names;
-    int getFilesCount(string dir);
-    int keyFromValue(string name);
-    bool dirExists(string dirName);
-
+    int lastClassLabel(const string& filename);
+    int labelFromName(const string& filename, string findName);
 };
 
 #endif //MMIFRM_H
