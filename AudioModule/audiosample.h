@@ -28,13 +28,10 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-#include <alize.h>
-
 #include "tools/typedef.h"
 #include "network/packet/score.h"
 
 using namespace std;
-using namespace alize;
 
 /**
  * \enum AudioFormat
