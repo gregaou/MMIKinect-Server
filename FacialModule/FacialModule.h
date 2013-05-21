@@ -27,12 +27,11 @@ class FacialModule : public IModule {
 public:
 
     FacialModule();
-		const string getName() const;
+    const string getName() const;
     void onNewPacket(Packet* p);
 
 private:
 
-		ifstream openFile(const string &filename);
     void loadCSVFile(const string &filename, char separator = ';');
     void loadFaceRecognizer(Ptr<FaceRecognizer> _faceRecognizer, const string& filename);
 
@@ -42,6 +41,7 @@ private:
 
     vector<int> _labels;
     map<int, string> _names;
+
     int lastClassLabel(const string& filename);
     int labelFromName(const string& filename, string findName);
 };
