@@ -28,6 +28,10 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> bf37fc661d40258656644adce684f47c23bf8a97
 #include "tools/typedef.h"
 #include "network/packet/score.h"
 
