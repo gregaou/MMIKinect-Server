@@ -16,14 +16,14 @@ extern "C" void destroy (IModule* module) {
     delete module;
 }
 
-const std::string FacialModule::getName() const { return "Facial Module"; }
+const string FacialModule::getName() const { return "Facial Module"; }
 
 /**
  * @brief FacialModule::onNewPacket
  * @param p Le packet reçu
  */
 void FacialModule::onNewPacket(Packet *p) {
-    if (!p) { *this << WARNING << "Empty packet!" << std::endl; return; }
+    if (!p) { *this << WARNING << "Empty packet!" << endl; return; }
 
     uint16 action = p->getType() & 0x0F;
     uint16 type = p->getType() & 0xF0;
@@ -41,7 +41,7 @@ void FacialModule::onNewPacket(Packet *p) {
         onScoreRequest(p);
         break;
     default :
-        *this << DEBUG << "Facial Module : Nothing to do (id=" << p->getId() << ")" << std::endl;
+        *this << DEBUG << "Facial Module : Nothing to do (id=" << p->getId() << ")" << endl;
         break;
     }
 }
@@ -81,7 +81,7 @@ void FacialModule::onListRequest(Packet *p) {
  */
 void FacialModule::onTrainRequest(Packet *p) {
     Ptr<FaceRecognizer> _faceRecognizer;
-    loadFaceRecognizer(&_faceRecognizer, "facereco");
+		loadFaceRecognizer(_faceRecognizer, "facereco");
 
     TrainRequestPacket trp(p);
     string name = trp.getPerson()->getId(); //nom de la personne
@@ -91,7 +91,7 @@ void FacialModule::onTrainRequest(Packet *p) {
     vector<Mat> newImage;
     vector<int> newLabel;
     newImage.push_back(m);
-    if(labelName != -1) {
+    if(labelName == -1) {
         ofstream file("identites.csv", ios_base::app);
         if (!file) {
             string error_message = "No valid input file was given, please check the given filename.";
@@ -125,7 +125,7 @@ void FacialModule::onTrainRequest(Packet *p) {
  */
 void FacialModule::onScoreRequest(Packet *p) {
     Ptr<FaceRecognizer> _faceRecognizer;
-    loadFaceRecognizer(&_faceRecognizer, "facereco");
+		loadFaceRecognizer(_faceRecognizer, "facereco");
 
     vector<uint8> img(p->getData(), p->getData() + p->getBodySize());
     Mat m = imdecode(img, CV_LOAD_IMAGE_GRAYSCALE);
@@ -152,11 +152,7 @@ void FacialModule::onScoreRequest(Packet *p) {
 void FacialModule::loadCSVFile(const string &filename, char separator) {
     _labels.clear();
     _names.clear();
-    std::ifstream file(filename.c_str(), ifstream::in);
-    if (!file) {
-        string error_message = "No valid input file was given, please check the given filename.";
-        CV_Error(CV_StsBadArg, error_message);
-    }
+		ifstream file = openFile(filename);
     string line, classlabel, name;
     while (getline(file, line)) {
         stringstream liness(line);
@@ -164,7 +160,7 @@ void FacialModule::loadCSVFile(const string &filename, char separator) {
         getline(liness, name);
         if(!classlabel.empty() && !name.empty()) {
             _labels.push_back(atoi(classlabel.c_str()));
-            _names.insert(std::pair<int, string>(atoi(classlabel.c_str()), name));
+            _names.insert(pair<int, string>(atoi(classlabel.c_str()), name));
         }
     }
 }
@@ -188,17 +184,14 @@ void FacialModule::loadFaceRecognizer(Ptr<FaceRecognizer> _faceRecognizer, const
 /**
  * @brief FacialModule::lastClassLabel
  * @param filename
- * @return Le dernier label (id) contenue dans le fichier csv
+ * @return Le dernier label (id) contenu dans le fichier csv
  */
 int FacialModule::lastClassLabel(const string &filename) {
     int min = -1;
-    std::ifstream file(filename.c_str(), ifstream::in);
-    if (!file) {
-        string error_message = "No valid input file was given, please check the given filename.";
-        CV_Error(CV_StsBadArg, error_message);
-    }
+    ifstream file = openFile(filename);
     string line, classlabel, name;
-    while (getline(file, line)) {
+		char separator = ';';
+		while (getline(file, line)) {
         stringstream liness(line);
         getline(liness, classlabel, separator);
         getline(liness, name);
@@ -214,12 +207,9 @@ int FacialModule::lastClassLabel(const string &filename) {
  * @return Le label (l'id) associé à la personne donnée en paramètre
  */
 int FacialModule::labelFromName(const string& filename, string findName) {
-    std::ifstream file(filename.c_str(), ifstream::in);
-    if (!file) {
-        string error_message = "No valid input file was given, please check the given filename.";
-        CV_Error(CV_StsBadArg, error_message);
-    }
+    ifstream file = openFile(filename);
     string line, classlabel, name;
+		char separator = ';';
     while (getline(file, line)) {
         stringstream liness(line);
         getline(liness, classlabel, separator);
@@ -227,4 +217,13 @@ int FacialModule::labelFromName(const string& filename, string findName) {
         if(name.compare(findName.c_str()) == 0) return atoi(classlabel.c_str());
     }
     return -1;
+}
+
+ifstream FacialModule::openFile(const string &filename) {
+		ifstream file(filename.c_str(), ios_base::in);
+    if (!file) {
+        string error_message = "No valid input file was given, please check the given filename.";
+        CV_Error(CV_StsBadArg, error_message);
+    }
+    return file;
 }
