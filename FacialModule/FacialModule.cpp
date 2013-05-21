@@ -90,7 +90,7 @@ void FacialModule::onTrainRequest(Packet *p) {
     Ptr<FaceRecognizer> _faceRecognizer;
     _faceRecognizer = loadFaceRecognizer(FACERECO);
 
-    cout << "pass" << endl;
+    cout << "facerecognizerd initialized" << endl;
 
     TrainRequestPacket trp(p);
     string name = trp.getPerson()->getId(); //nom de la personne
@@ -101,6 +101,7 @@ void FacialModule::onTrainRequest(Packet *p) {
 
     vector<Mat> newImage;
     vector<int> newLabel;
+
     newImage.push_back(m);
     if(labelName == -1) {
         ofstream file(FICHIER, ios_base::app);
@@ -110,10 +111,10 @@ void FacialModule::onTrainRequest(Packet *p) {
         }
         int lastLabel = lastClassLabel(FICHIER);
         newLabel.push_back(lastLabel);
-        file << lastLabel << ";" << name;
-        file.close();
+        file << lastLabel << ";" << name << endl;
         _faceRecognizer->train(newImage, newLabel);
         reloadFromCSVFile(FICHIER);
+        file.close();
     }
 
     else {
@@ -181,6 +182,7 @@ void FacialModule::reloadFromCSVFile(const string &filename, const char separato
             _names.insert(pair<int, string>(atoi(classlabel.c_str()), name));
         }
     }
+    file.close();
 }
 
 /**
@@ -191,22 +193,22 @@ void FacialModule::reloadFromCSVFile(const string &filename, const char separato
  *
  */
 Ptr<FaceRecognizer> FacialModule::loadFaceRecognizer(const string& filename) {
-    Ptr<FaceRecognizer> f;
+    Ptr<FaceRecognizer> f = createLBPHFaceRecognizer();
     cout << "looking for facerecognizer" << endl;
     ifstream file(filename.c_str(), ios_base::in);
     if (!file) {
         cout << "no facerecognizer found" << endl;
         cout << "initializing new facerecognizer" << endl;
-        f = createFisherFaceRecognizer();
-        cout << "new facerecognizer declared" << endl;
         f->save(filename);
-        cout << "new facerecognizer initialized" << endl;
     }
     else {
-        cout << "facerecognizer found" << endl;
-        f->load(filename);
+        cout << "facerecognizer found (" << filename << ")" << endl;
+        try {
+            f->load(filename);
+        } catch(std::exception& e) { cout << e.what() << endl; }
         cout << "facerecognizer loaded" << endl;
     }
+    file.close();
     return f;
 }
 
@@ -231,6 +233,7 @@ int FacialModule::lastClassLabel(const string &filename, const char separator) {
         getline(liness, name);
         min = (atoi(classlabel.c_str()) > min)? atoi(classlabel.c_str()):min;
     }
+    file.close();
     return min + 1;
 }
 
@@ -255,5 +258,6 @@ int FacialModule::labelFromName(const string& filename, string findName, const c
         getline(liness, name);
         if(name.compare(findName.c_str()) == 0) return atoi(classlabel.c_str());
     }
+    file.close();
     return -1;
 }
