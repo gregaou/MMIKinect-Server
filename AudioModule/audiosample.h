@@ -87,6 +87,11 @@ private:
 	 */
 	AudioSample* doSaveDataToFile (string filename);
 
+	/**
+	 * \brief Mutex bloquant lors d'une ecriture.
+	 */
+	static pthread_mutex_t* _mutex;
+
 protected:
 	/**
 	 * \brief Accesseur du format audio d'une instance de AudioSample
@@ -157,6 +162,16 @@ protected:
 	 * \return L'instance courante.
 	 */
 	AudioSample* doTrainTarget(string person);
+
+	/**
+	 * \brief Bloque un mutex
+	 */
+	static void lockMutex();
+
+	/**
+	 * \brief Débloque un mutex déjà bloqué.
+	 */
+	static void unlockMutex();
 
 public:
 	/**

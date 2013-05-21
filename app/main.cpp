@@ -4,10 +4,10 @@
 
 int main()
 {
-	LoggerBuffer* buf = new LoggerBuffer("[DEBUG]   : ", DEBUG, std::clog);
-	buf      ->setNext( new LoggerBuffer("[INFO]    : ", INFO))
-					 ->setNext( new LoggerBuffer("[WARNING] : ", WARNING))
-					 ->setNext( new LoggerBuffer("[ERROR]   : ", ERROR, std::cerr));
+	LoggerBuffer* buf = new LoggerBuffer("[DEBUG]   : ", DEBUG,   std::clog);
+	buf      ->setNext( new LoggerBuffer("[INFO]    : ", INFO,    std::cout))
+					 ->setNext( new LoggerBuffer("[WARNING] : ", WARNING, std::clog))
+					 ->setNext( new LoggerBuffer("[ERROR]   : ", ERROR,   std::cerr));
 
 	Logger::getInstance()->setBuffer(buf);
 

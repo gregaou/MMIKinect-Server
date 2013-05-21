@@ -26,7 +26,7 @@ class FacialModule : public IModule {
 
 public:
 
-    FacialModule();
+	FacialModule() : IModule() {}
     const string getName() const;
     void onNewPacket(Packet* p);
 
