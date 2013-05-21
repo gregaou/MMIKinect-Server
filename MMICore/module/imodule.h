@@ -14,7 +14,7 @@ public:
 	virtual ~IModule () {}
 	virtual void onNewPacket (Packet* p) = 0;
 	virtual void setFolder (std::string folder) { _folder = folder; }
-	virtual std::string getFolder() { return _folder; }
+    virtual std::string getFolder() { return _folder; }
 
 private:
 	std::string _folder;

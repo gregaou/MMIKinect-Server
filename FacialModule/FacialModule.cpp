@@ -8,6 +8,9 @@
 #include <iostream>
 #include <sys/stat.h>
 
+#define FICHIER (this->getFolder() + "identites.csv").c_str()
+#define FACERECO (this->getFolder() + "facereco")
+
 extern "C" IModule* create () {
     return new FacialModule();
 }
@@ -52,9 +55,10 @@ void FacialModule::onNewPacket(Packet *p) {
  * @param p
  */
 void FacialModule::onListRequest(Packet *p) {
-    loadCSVFile("identites.csv");
+    reloadFromCSVFile(FICHIER);
     map<int, string>::iterator iter;
     PeopleVector *vp = new PeopleVector();
+
     for(iter = _names.begin(); iter != _names.end(); ++iter) {
         vp->push_back(Person(iter->second));
     }
@@ -80,29 +84,36 @@ void FacialModule::onListRequest(Packet *p) {
  * @param p
  */
 void FacialModule::onTrainRequest(Packet *p) {
+
+    cout << "train request" << endl;
+
     Ptr<FaceRecognizer> _faceRecognizer;
-    loadFaceRecognizer(_faceRecognizer, "facereco");
+    _faceRecognizer = loadFaceRecognizer(FACERECO);
+
+    cout << "pass" << endl;
 
     TrainRequestPacket trp(p);
     string name = trp.getPerson()->getId(); //nom de la personne
     vector<uint8> img(trp.getTrainData(), trp.getTrainData() + trp.getTrainDataSize());
     Mat m = imdecode(img, CV_LOAD_IMAGE_GRAYSCALE);
-    int labelName = labelFromName("identites.csv", name);
+
+    int labelName = labelFromName(FICHIER, name);
+
     vector<Mat> newImage;
     vector<int> newLabel;
     newImage.push_back(m);
     if(labelName == -1) {
-        ofstream file("identites.csv", ios_base::app);
+        ofstream file(FICHIER, ios_base::app);
         if (!file) {
-            string error_message = "No valid input file was given, please check the given filename.";
+            string error_message = "(W) No valid input file was given, please check the given filename.";
             CV_Error(CV_StsBadArg, error_message);
         }
-        int lastLabel = lastClassLabel("identites.csv");
+        int lastLabel = lastClassLabel(FICHIER);
         newLabel.push_back(lastLabel);
         file << lastLabel << ";" << name;
         file.close();
         _faceRecognizer->train(newImage, newLabel);
-        loadCSVFile("identites.csv");
+        reloadFromCSVFile(FICHIER);
     }
 
     else {
@@ -110,10 +121,11 @@ void FacialModule::onTrainRequest(Packet *p) {
         _faceRecognizer->update(newImage, newLabel);
     }
 
-    _faceRecognizer->save("facereco");
+    _faceRecognizer->save(FACERECO);
 
     TrainResultPacket pReturn(p);
     pReturn.doSend();
+
 }
 
 /**
@@ -125,7 +137,7 @@ void FacialModule::onTrainRequest(Packet *p) {
  */
 void FacialModule::onScoreRequest(Packet *p) {
     Ptr<FaceRecognizer> _faceRecognizer;
-    loadFaceRecognizer(_faceRecognizer, "facereco");
+    _faceRecognizer = loadFaceRecognizer(FACERECO);
 
     vector<uint8> img(p->getData(), p->getData() + p->getBodySize());
     Mat m = imdecode(img, CV_LOAD_IMAGE_GRAYSCALE);
@@ -143,19 +155,19 @@ void FacialModule::onScoreRequest(Packet *p) {
 }
 
 /**
- * @brief FacialModule::loadCSVFile
+ * @brief FacialModule::reloadFromCSVFile
  * @param filename Le fichier source (du type Chemin;id)
  * @param separator Le separateur (ici ';')
  * On charge les noms et les id des personnes enregistrées
  * dans les structures prévues à cet effet
  */
-void FacialModule::loadCSVFile(const string &filename, char separator) {
+void FacialModule::reloadFromCSVFile(const string &filename, const char separator) {
     _labels.clear();
     _names.clear();
 
     ifstream file(filename.c_str(), ios_base::in);
     if (!file) {
-        string error_message = "No valid input file was given, please check the given filename.";
+        string error_message = "(R) No valid input file was given, please check the given filename.";
         CV_Error(CV_StsBadArg, error_message);
     }
 
@@ -178,13 +190,24 @@ void FacialModule::loadCSVFile(const string &filename, char separator) {
  * @param filename
  *
  */
-void FacialModule::loadFaceRecognizer(Ptr<FaceRecognizer> _faceRecognizer, const string& filename) {
+Ptr<FaceRecognizer> FacialModule::loadFaceRecognizer(const string& filename) {
+    Ptr<FaceRecognizer> f;
+    cout << "looking for facerecognizer" << endl;
     ifstream file(filename.c_str(), ios_base::in);
     if (!file) {
-        _faceRecognizer = createFisherFaceRecognizer();
-        _faceRecognizer->save(filename);
+        cout << "no facerecognizer found" << endl;
+        cout << "initializing new facerecognizer" << endl;
+        f = createFisherFaceRecognizer();
+        cout << "new facerecognizer declared" << endl;
+        f->save(filename);
+        cout << "new facerecognizer initialized" << endl;
     }
-    else _faceRecognizer->load(filename);
+    else {
+        cout << "facerecognizer found" << endl;
+        f->load(filename);
+        cout << "facerecognizer loaded" << endl;
+    }
+    return f;
 }
 
 /**
@@ -192,17 +215,16 @@ void FacialModule::loadFaceRecognizer(Ptr<FaceRecognizer> _faceRecognizer, const
  * @param filename
  * @return Le dernier label (id) contenu dans le fichier csv
  */
-int FacialModule::lastClassLabel(const string &filename) {
+int FacialModule::lastClassLabel(const string &filename, const char separator) {
 
     ifstream file(filename.c_str(), ios_base::in);
     if (!file) {
-        string error_message = "No valid input file was given, please check the given filename.";
+        string error_message = "(R) No valid input file was given, please check the given filename.";
         CV_Error(CV_StsBadArg, error_message);
     }
 
     int min = -1;
     string line, classlabel, name;
-    char separator = ';';
     while (getline(file, line)) {
         stringstream liness(line);
         getline(liness, classlabel, separator);
@@ -218,16 +240,15 @@ int FacialModule::lastClassLabel(const string &filename) {
  * @param findName
  * @return Le label (l'id) associé à la personne donnée en paramètre
  */
-int FacialModule::labelFromName(const string& filename, string findName) {
+int FacialModule::labelFromName(const string& filename, string findName, const char separator) {
 
     ifstream file(filename.c_str(), ios_base::in);
     if (!file) {
-        string error_message = "No valid input file was given, please check the given filename.";
+        string error_message = "(R) No valid input file was given, please check the given filename.";
         CV_Error(CV_StsBadArg, error_message);
     }
 
     string line, classlabel, name;
-    char separator = ';';
     while (getline(file, line)) {
         stringstream liness(line);
         getline(liness, classlabel, separator);
