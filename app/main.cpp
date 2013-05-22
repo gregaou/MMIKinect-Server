@@ -1,7 +1,5 @@
 #include <fstream>
 
-#include "opencv2/opencv.hpp"
-
 #include "server.h"
 
 int main()

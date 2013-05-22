@@ -28,7 +28,7 @@ AudioSample::AudioSample(string filename, AudioFormat format, string folder)
 }
 
 AudioSample::~AudioSample() {
-	delete(_data);
+	if (_data) delete[] _data;
 }
 
 AudioSample* AudioSample::doLoadDataFromFile(string filename) {
@@ -54,26 +54,21 @@ AudioSample* AudioSample::doSaveDataToFile(string filename) {
 }
 
 AudioSample* AudioSample::doClearScoring() {
-	if (_scoring) {
-		_scoring->clear();
-	}
+	getScoring()->clear();
 
 	return this;
 }
 
 AudioSample* AudioSample::doAddScoring (string person, double scoring) {
-	if (!_scoring) {
-		_scoring = new NetworkVector<Score>();
-	}
 	Score msg = Score(person, scoring);
-	_scoring->push_back(msg);
+	getScoring()->push_back(msg);
 
 	return this;
 }
 
 ScoringVector* AudioSample::getScoring() {
 	if (!this->_scoring) {
-		doTest();
+		_scoring = new NetworkVector<Score>();
 	}
 	return this->_scoring;
 }
@@ -150,23 +145,20 @@ AudioSample* AudioSample::doComputeTest() {
 	string ndxList = _folder + "ndx/list.ndx";
 	string normFile = _folder + "prm/testing.norm.prm";
 
-	stringstream cmd;
-	cmd << exec
-			<< " " << params
-			<< " --outputFilename " << outFile
-			<< " --ndxFilename " << ndxFile;
+	string cmd = exec
+			+ " " + params
+			+ " --outputFilename " + outFile
+			+ " --ndxFilename " + ndxFile;
 
 	lockMutex();
-	ifstream list(ndxList.c_str());
-	list.seekg(ios_base::end);
-	int size = list.tellg();
-	list.seekg(ios_base::beg);
-	if (size == 0) {
-		list.close();
+	//Testing if the file exists
+	struct stat buffer;
+	if (stat (ndxList.c_str(), &buffer) != 0) {
 		unlockMutex();
 		return this;
 	}
 
+	ifstream list(ndxList.c_str());
 	ofstream ndx(ndxFile.c_str());
 	ndx.seekp(0, ios::beg);
 	string buff;
@@ -176,7 +168,7 @@ AudioSample* AudioSample::doComputeTest() {
 	list.close();
 
 	doSaveDataToFile(normFile);
-	system(cmd.str().c_str());
+	system(cmd.c_str());
 
 	ifstream res(outFile.c_str());
 	string person;
