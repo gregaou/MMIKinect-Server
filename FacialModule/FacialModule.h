@@ -27,23 +27,26 @@ class FacialModule : public IModule {
 public:
 
 	FacialModule() : IModule() {}
-    const string getName() const;
-    void onNewPacket(Packet* p);
+	const string getName() const;
+	void onNewPacket(Packet* p);
 
 private:
 
-    void loadCSVFile(const string &filename, char separator = ';');
-    void loadFaceRecognizer(Ptr<FaceRecognizer> _faceRecognizer, const string& filename);
+	/* Traitement du paquet */
+	void onListRequest(Packet *p);
+	void onTrainRequest(Packet *p);
+	void onScoreRequest(Packet *p);
 
-    void onListRequest(Packet *p);
-    void onTrainRequest(Packet *p);
-    void onScoreRequest(Packet *p);
+	/* Traitement de données */
+	int lastClassLabel(const string& filename, const char separator = ';');
+	int labelFromName(const string& filename, string findName, const char separator = ';');
+	void reloadFromCSVFile(const string &filename, const char separator = ';');
+	Ptr<FaceRecognizer> loadFaceRecognizer(const string& filename);
 
-    vector<int> _labels;
-    map<int, string> _names;
+	/* Support d'informations */
+	vector<int> _labels;
+	map<int, string> _names;
 
-    int lastClassLabel(const string& filename);
-    int labelFromName(const string& filename, string findName);
 };
 
 #endif //MMIFRM_H

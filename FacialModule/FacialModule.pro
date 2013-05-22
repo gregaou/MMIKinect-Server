@@ -17,11 +17,11 @@ LIBS += ../libMMICore.a
 
 LIBS += -ldl
 
-INCLUDEPATH += /usr/include/opencv \
-               /usr/include/opencv2 \
-               /usr/include/opencv2/core
+INCLUDEPATH += /usr/local/include/opencv \
+               /usr/local/include/opencv2 \
+               /usr/local/include/opencv2/core
 
-LIBS += -L/usr/lib -lopencv_core -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_imgproc
+LIBS += -L/home/theo/opencv/opencv-2.4.5/build/lib -lopencv_core -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_imgproc
 
 DESTDIR = ../lib/
 
