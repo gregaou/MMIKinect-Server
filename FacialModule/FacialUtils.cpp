@@ -1,6 +1,16 @@
 #include "FacialUtils.h" 
 
 
+void FacialUtils::newUser(const string& filename, const int id, const string name) {
+    ofstream file(filename.c_str(), ios_base::app);
+    if (!file) {
+        string error_message = "(W) No valid input file was given, please check the given filename.";
+        CV_Error(CV_StsBadArg, error_message);
+    }
+    file << id << ";" << name << endl;
+    file.close();
+}
+
 /**
  * @brief FacialUtils::reloadFromCSVFile
  * @param filename Le fichier CSV source
@@ -40,8 +50,8 @@ map<int, string> FacialUtils::reloadFromCSVFile(const string &filename, const ch
  * @param filename
  *
  */
-Ptr<FaceRecognizer> FacialUtils::loadFaceRecognizer(const string& filename) {
-    Ptr<FaceRecognizer> f = createLBPHFaceRecognizer();
+void FacialUtils::loadFaceRecognizer(Ptr<FaceRecognizer> &f, const string& filename) {
+    f = createLBPHFaceRecognizer();
     cout << "Looking for Face Recognizer..." << endl;
     ifstream file(filename.c_str(), ios_base::in);
     if (!file) {
@@ -56,7 +66,6 @@ Ptr<FaceRecognizer> FacialUtils::loadFaceRecognizer(const string& filename) {
         } catch(std::exception& e) { cout << e.what() << endl; }
     }
     file.close();
-    return f;
 }
 
 /**

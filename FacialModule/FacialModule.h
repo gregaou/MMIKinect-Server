@@ -21,6 +21,8 @@ private:
 	void onTrainRequest(Packet *p);
 	void onScoreRequest(Packet *p);
 
+    Ptr<FaceRecognizer> _faceRecognizer;
+
 };
 
 #endif //MMIFRM_H

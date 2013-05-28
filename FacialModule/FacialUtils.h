@@ -23,10 +23,12 @@ using namespace cv;
 class FacialUtils {
 
 public :
+
+    static void newUser(const string& filename, const int id, const string name);
 	static int lastClassLabel(const string& filename, const char separator = ';');
 	static int labelFromName(const string& filename, string findName, const char separator = ';');
 	static map<int, string> reloadFromCSVFile(const string &filename, const char separator = ';');
-	static Ptr<FaceRecognizer> loadFaceRecognizer(const string& filename);
+    static void loadFaceRecognizer(Ptr<FaceRecognizer> &f, const string& filename);
 
 private:
 	FacialUtils() {}

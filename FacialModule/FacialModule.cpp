@@ -74,7 +74,7 @@ void FacialModule::onListRequest(Packet *p) {
  * On cherche le dernier label du fichier csv
  * On vérifie que le nom envoyé n'est pas contenu dans le csv
  *
- * 2 - Non Présence de la personne
+ * 2 - Absence de la personne
  * --- on ouvre le fichier csv en écriture et on enregiste la personne
  * --- sous la forme "dernierlabel;nom". On entraine ensuite le modele
  * --- et on met à jour les informations contenues dans le fichier csv
@@ -89,12 +89,7 @@ void FacialModule::onTrainRequest(Packet *p) {
 
     *this << DEBUG << "Train Request" << endl;
 
-    *this << DEBUG << "Loading Facial Recognizer" << endl;
-
-    Ptr<FaceRecognizer> _faceRecognizer;
-    _faceRecognizer = FacialUtils::loadFaceRecognizer(FACERECO);
-
-    *this << DEBUG << "Face Recognizer Loaded" << endl;
+    FacialUtils::loadFaceRecognizer(_faceRecognizer, FACERECO);
 
     TrainRequestPacket trp(p);
     string name = trp.getPerson()->getId(); //nom de la personne
@@ -107,25 +102,18 @@ void FacialModule::onTrainRequest(Packet *p) {
     vector<int> newLabel;
 
     newImage.push_back(m);
+
     if(labelName == -1) {
-        ofstream file(FICHIER, ios_base::app);
-        if (!file) {
-            string error_message = "(W) No valid input file was given, please check the given filename.";
-            CV_Error(CV_StsBadArg, error_message);
-        }
-        int lastLabel = FacialUtils::lastClassLabel(FICHIER);
-        newLabel.push_back(lastLabel);
-        file << lastLabel << ";" << name << endl;
-        _faceRecognizer->train(newImage, newLabel);
-        file.close();
+        labelName = FacialUtils::lastClassLabel(FICHIER);
+        FacialUtils::newUser(FICHIER, labelName, name);
     }
 
-    else {
-        newLabel.push_back(labelName);
-        _faceRecognizer->update(newImage, newLabel);
-    }
+    newLabel.push_back(labelName);
+
+    _faceRecognizer->update(newImage, newLabel);
 
     *this << DEBUG << "Train Request complete" << endl;
+
     _faceRecognizer->save(FACERECO);
 
     TrainResultPacket pReturn(p);
@@ -141,15 +129,16 @@ void FacialModule::onTrainRequest(Packet *p) {
  * @param p
  */
 void FacialModule::onScoreRequest(Packet *p) {
-    Ptr<FaceRecognizer> _faceRecognizer;
-    _faceRecognizer = FacialUtils::loadFaceRecognizer(FACERECO);
+
+    FacialUtils::loadFaceRecognizer(_faceRecognizer, FACERECO);
 
     vector<uint8> img(p->getData(), p->getData() + p->getBodySize());
     Mat m = imdecode(img, CV_LOAD_IMAGE_GRAYSCALE);
 
-    //On a recuperé la prediction;
+    //On recupère la prediction;
     double confidence = 0.0;
     int predictedLabel = -1;
+
     _faceRecognizer->predict(m, predictedLabel, confidence);
 
     //On renvoie le paquet
