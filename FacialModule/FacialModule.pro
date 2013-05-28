@@ -27,7 +27,9 @@ LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopenc
 DESTDIR = ../lib/
 
 SOURCES += \
-    FacialModule.cpp
+    FacialModule.cpp \
+    FacialUtils.cpp
 
 HEADERS += \
-    FacialModule.h
+    FacialModule.h \
+    FacialUtils.h
