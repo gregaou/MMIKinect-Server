@@ -1,13 +1,6 @@
 #ifndef __H_FACIALUTILS_H__
 #define __H_FACIALUTILS_H__
 
-#include "opencv2/core/core.hpp"
-#include "opencv2/contrib/contrib.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/objdetect/objdetect.hpp"
-#include "opencv/cv.h"
-
 #include <vector>
 #include <map>
 #include <sys/types.h>
@@ -16,6 +9,13 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+
+#include "opencv2/core/core.hpp"
+#include "opencv2/contrib/contrib.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/objdetect/objdetect.hpp"
+#include "opencv/cv.h"
 
 using namespace std;
 using namespace cv;

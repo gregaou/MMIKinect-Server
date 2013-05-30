@@ -89,8 +89,9 @@ void FacialModule::onTrainRequest(Packet *p) {
 
     *this << DEBUG << "Train Request" << endl;
 
+    *this << DEBUG << "Loading FaceRecognizer..." << endl;
     FacialUtils::loadFaceRecognizer(_faceRecognizer, FACERECO);
-
+    *this << DEBUG << "FaceRecognizer loaded" << endl;
     TrainRequestPacket trp(p);
     string name = trp.getPerson()->getId(); //nom de la personne
     vector<uint8> img(trp.getTrainData(), trp.getTrainData() + trp.getTrainDataSize());
@@ -130,6 +131,9 @@ void FacialModule::onTrainRequest(Packet *p) {
  */
 void FacialModule::onScoreRequest(Packet *p) {
 
+    ScoreResultPacket pReturn(p);
+    ScoringVector *score = new ScoringVector();
+
     FacialUtils::loadFaceRecognizer(_faceRecognizer, FACERECO);
 
     vector<uint8> img(p->getData(), p->getData() + p->getBodySize());
@@ -139,11 +143,12 @@ void FacialModule::onScoreRequest(Packet *p) {
     double confidence = 0.0;
     int predictedLabel = -1;
 
-    _faceRecognizer->predict(m, predictedLabel, confidence);
-
-    //On renvoie le paquet
-    ScoreResultPacket pReturn(p);
-    ScoringVector *score = new ScoringVector();
+    try {
+        _faceRecognizer->predict(m, predictedLabel, confidence);
+    } catch(Exception) {
+        *this << WARNING << "Impossible de prédire un score" << endl;
+        score->push_back(Score("Inconnu", confidence));
+    }
 
     map<int, string> names = FacialUtils::reloadFromCSVFile(FICHIER);
 

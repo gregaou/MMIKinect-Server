@@ -52,15 +52,8 @@ map<int, string> FacialUtils::reloadFromCSVFile(const string &filename, const ch
  */
 void FacialUtils::loadFaceRecognizer(Ptr<FaceRecognizer> &f, const string& filename) {
     f = createLBPHFaceRecognizer();
-    cout << "Looking for Face Recognizer..." << endl;
     ifstream file(filename.c_str(), ios_base::in);
-    if (!file) {
-        cout << "!! Face Recognizer not found !!" << endl;
-        cout << "Initializing new Face Recognizer..." << endl;
-        f->save(filename);
-    }
-    else {
-        cout << "Face Recognizer found (" << filename << ")" << endl;
+    if (file) {
         try {
             f->load(filename);
         } catch(std::exception& e) { cout << e.what() << endl; }
