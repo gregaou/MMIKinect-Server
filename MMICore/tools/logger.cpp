@@ -1,5 +1,9 @@
 #include "logger.h"
 
+#include <fstream>
+
+#include "tools/config.h"
+
 Logger& Loggable::operator<< (const LoggerPriority priority) {
 	Logger& logger = *Logger::getInstance();
 
@@ -29,11 +33,144 @@ Logger& Logger::setBuffer(LoggerBuffer* buffer) {
 	return *this;
 }
 
+void Logger::configure() {
+	Config* c = Config::getInstance();
+	string prefix;
+	LoggerBuffer* buf = NULL;
+
+	if (c->paramExists("DEBUG.prefix"))
+		prefix = c->getParamValue("DEBUG.prefix");
+	if (c->paramExists("DEBUG.file")) {
+		ofstream* stream = new ofstream(c->getParamValue("DEBUG.file").c_str());
+		if (buf == NULL) {
+			buf = new LoggerBuffer(prefix, DEBUG, *stream);
+		} else {
+			buf->setNext(new LoggerBuffer(prefix, DEBUG, *stream));
+		}
+	}
+	if (c->paramExists("DEBUG.stream")) {
+		string name = c->getParamValue("DEBUG.stream");
+		ostream* stream = NULL;
+		if (name == "std::cout") {
+			stream = &std::cout;
+		} else if (name == "std::clog") {
+			stream = &std::clog;
+		} else if (name == "std::cerr") {
+			stream = &std::cerr;
+		}
+
+		if (stream != NULL) {
+			if (buf == NULL) {
+				buf = new LoggerBuffer(prefix, DEBUG, *stream);
+			} else {
+				buf->setNext(new LoggerBuffer(prefix, DEBUG, *stream));
+			}
+		}
+	}
+
+	if (c->paramExists("INFO.prefix"))
+		prefix = c->getParamValue("INFO.prefix");
+	if (c->paramExists("INFO.file")) {
+		ofstream* stream = new ofstream(c->getParamValue("INFO.file").c_str());
+		if (buf == NULL) {
+			buf = new LoggerBuffer(prefix, INFO, *stream);
+		} else {
+			buf->setNext(new LoggerBuffer(prefix, INFO, *stream));
+		}
+	}
+	if (c->paramExists("INFO.stream")) {
+		string name = c->getParamValue("INFO.stream");
+		ostream* stream = NULL;
+		if (name == "std::cout") {
+			stream = &std::cout;
+		} else if (name == "std::clog") {
+			stream = &std::clog;
+		} else if (name == "std::cerr") {
+			stream = &std::cerr;
+		}
+
+		if (stream != NULL) {
+			if (buf == NULL) {
+				buf = new LoggerBuffer(prefix, INFO, *stream);
+			} else {
+				buf->setNext(new LoggerBuffer(prefix, INFO, *stream));
+			}
+		}
+	}
+
+	if (c->paramExists("WARN.prefix"))
+		prefix = c->getParamValue("WARN.prefix");
+	if (c->paramExists("WARN.file")) {
+		ofstream* stream = new ofstream(c->getParamValue("WARN.file").c_str());
+		if (buf == NULL) {
+			buf = new LoggerBuffer(prefix, WARNING, *stream);
+		} else {
+			buf->setNext(new LoggerBuffer(prefix, WARNING, *stream));
+		}
+	}
+	if (c->paramExists("WARN.stream")) {
+		string name = c->getParamValue("WARN.stream");
+		ostream* stream = NULL;
+		if (name == "std::cout") {
+			stream = &std::cout;
+		} else if (name == "std::clog") {
+			stream = &std::clog;
+		} else if (name == "std::cerr") {
+			stream = &std::cerr;
+		}
+
+		if (stream != NULL) {
+			if (buf == NULL) {
+				buf = new LoggerBuffer(prefix, WARNING, *stream);
+			} else {
+				buf->setNext(new LoggerBuffer(prefix, WARNING, *stream));
+			}
+		}
+	}
+
+	if (c->paramExists("ERROR.prefix"))
+		prefix = c->getParamValue("ERROR.prefix");
+	if (c->paramExists("ERROR.file")) {
+		ofstream* stream = new ofstream(c->getParamValue("ERROR.file").c_str());
+		if (buf == NULL) {
+			buf = new LoggerBuffer(prefix, ERROR, *stream);
+		} else {
+			buf->setNext(new LoggerBuffer(prefix, ERROR, *stream));
+		}
+	}
+	if (c->paramExists("ERROR.stream")) {
+		string name = c->getParamValue("ERROR.stream");
+		ostream* stream = NULL;
+		if (name == "std::cout") {
+			stream = &std::cout;
+		} else if (name == "std::clog") {
+			stream = &std::clog;
+		} else if (name == "std::cerr") {
+			stream = &std::cerr;
+		}
+
+		if (stream != NULL) {
+			if (buf == NULL) {
+				buf = new LoggerBuffer(prefix, ERROR, *stream);
+			} else {
+				buf->setNext(new LoggerBuffer(prefix, ERROR, *stream));
+			}
+		}
+	}
+
+	if (buf != NULL)
+		Logger::getInstance()->setBuffer(buf);
+}
+
+
 LoggerBuffer::LoggerBuffer(const string prefix, const LoggerPriority priority,
 													 ostream& stream, LoggerBuffer* next)
 	: _prefix(prefix), _priority(priority), _stream(stream), _next(next) {}
 
 LoggerBuffer* LoggerBuffer::setNext(LoggerBuffer* next) {
+	if (_next != NULL)
+		next->setNext(_next);
+
 	_next = next;
 
 	return next;

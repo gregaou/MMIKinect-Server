@@ -24,7 +24,8 @@ SOURCES += \
     network/packet/listpacket.cpp \
     tools/threadprivate.cpp \
     tools/thread.cpp \
-    tools/logger.cpp
+    tools/logger.cpp \
+    tools/config.cpp
 
 HEADERS += \
     module/modulethread.h \
@@ -47,7 +48,8 @@ HEADERS += \
     tools/threadprivate.h \
     tools/thread.h \
     tools/singleton.h \
-    tools/logger.h
+    tools/logger.h \
+    tools/config.h
 
 QMAKE_LFLAGS += -Wl,--export-dynamic
 

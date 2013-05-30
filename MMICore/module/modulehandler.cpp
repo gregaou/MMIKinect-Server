@@ -1,5 +1,7 @@
 #include "modulehandler.h"
 
+#include "tools/config.h"
+
 #include "module/imodule.h"
 #include "module/moduleexception.h"
 #include "module/moduleserver.h"
@@ -101,7 +103,7 @@ IModule* ModuleHandler::getModuleInstance () {
 }
 
 std::string ModuleHandler::getModuleFolder () {
-	std::string folder = "./module/";
+	std::string folder = Config::getInstance()->getParamValue("modulePath");
 
 	int start = _libraryPath.find_last_of('/') + 4;
 

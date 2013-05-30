@@ -1,0 +1,10 @@
+DEBUG.prefix=[DEBUG]   : 
+DEBUG.stream=std::clog
+INFO.prefix=[INFO]    : 
+INFO.stream=std::cout
+WARN.prefix=[WARNING] : 
+WARN.stream=std::cout
+ERROR.prefix=[ERROR]   : 
+ERROR.stream=std::cerr
+libPath=./lib/
+modulePath=./module/
