@@ -28,9 +28,16 @@ ModuleHandler::~ModuleHandler() {
 	}
 	if (_moduleInstance)
 		(getModuleDestructor())(_moduleInstance);
-	if (_libraryPtr)
+	if (_libraryPtr) {
+		*this << DEBUG << "Unloading module : " << _libraryPath << endl;
 		dlclose(_libraryPtr);
+	}
 }
+
+const string ModuleHandler::getName () const {
+	return "ModuleHandler";
+}
+
 
 ModuleHandler* ModuleHandler::onNewPacket(Packet* p) {
 	ModuleThread* t = new ModuleThread(getModuleInstance(),this);
@@ -65,6 +72,7 @@ void* ModuleHandler::getLibraryPointer () {
 	if (!_libraryPtr) {
 		dlerror();
 		_libraryPtr = dlopen(_libraryPath.c_str(), RTLD_LAZY);
+		*this << DEBUG << "Loading module : " << _libraryPath << endl;
 		if (!_libraryPtr) {
 			throw ModuleException(dlerror(), -1);
 		}

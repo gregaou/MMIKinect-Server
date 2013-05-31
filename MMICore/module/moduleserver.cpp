@@ -37,7 +37,6 @@ ModuleServer* ModuleServer::load(std::string fromPath) {
 				// On la charge
 				std::stringstream path;
 				path << fromPath.c_str() << filename;
-				*this << DEBUG << "Loading module : " << path.str() << endl;
 				addModuleHandler(new ModuleHandler(path.str(), this));
 			}
 		}
@@ -48,7 +47,6 @@ ModuleServer* ModuleServer::load(std::string fromPath) {
 }
 
 ModuleServer* ModuleServer::reload(std::string fromPath) {
-	*this << DEBUG << "Unloading modules" << endl;
 	getModuleHandlers()->clear();
 	return load(fromPath);
 }
@@ -80,7 +78,7 @@ ModuleServer* ModuleServer::onNewPacket (Packet* p) {
 			 i != getModuleHandlers()->end(); ++i) {
 		try {
 			(*i)->onNewPacket(new Packet(*p));
-		} catch (ModuleException &e) {
+		} catch (std::exception& e) {
 			*this << ERROR << e.what() << std::endl;
 		}
 	}

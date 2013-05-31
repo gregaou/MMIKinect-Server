@@ -23,6 +23,7 @@ void ModuleThread::run() {
 	} catch (std::exception &e) {
 		*this << ERROR << e.what() << std::endl;
 	}
+	delete _packet;
 	_parent->onThreadFinished();
 }
 

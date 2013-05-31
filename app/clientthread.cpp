@@ -21,14 +21,17 @@ void ClientThread::run()
 	*this << INFO << "connected" << std::endl;
 	while(1)
 	{
+		Packet* p = NULL;
 		try {
-			Packet* p = new Packet(_socketDescriptor);
+			p = new Packet(_socketDescriptor);
 			getModuleServer()->onNewPacket(p);
 			delete p;
+			p = NULL;
 		} catch(NetworkException e) {
 			*this << ERROR << e.what() << std::endl;
 			*this << INFO << "Disconnected" << std::endl;
 			close(_socketDescriptor);
+			if (p) delete p;
 			break;
 		}
 	}

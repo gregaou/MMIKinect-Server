@@ -9,6 +9,8 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
+#include "tools/logger.h"
+
 class Packet;
 class IModule;
 class ModuleThread;
@@ -17,11 +19,12 @@ class ModuleServer;
 typedef IModule* create_t();
 typedef void destroy_t(IModule*);
 
-class ModuleHandler
+class ModuleHandler : public Loggable
 {
 public:
 	ModuleHandler(std::string libraryFilePath, ModuleServer* server = NULL);
 	~ModuleHandler ();
+	virtual const string getName () const;
 
 	ModuleHandler* onNewPacket(Packet* p);
 	ModuleHandler* onThreadFinished();
