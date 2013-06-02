@@ -13,7 +13,7 @@
 #include "tools/typedef.h"
 #include "network/networkexception.h"
 
-#define PORT_DEFAULT 1337
+#define PORT_DEFAULT 1338
 #define INVALID_SOCKET		-1
 #define SOCKET_ERROR		-1
 

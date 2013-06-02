@@ -95,6 +95,9 @@ void FacialModule::onTrainRequest(Packet *p) {
     TrainRequestPacket trp(p);
     string name = trp.getPerson()->getId(); //nom de la personne
     vector<uint8> img(trp.getTrainData(), trp.getTrainData() + trp.getTrainDataSize());
+
+    char a[50];
+
     Mat m = imdecode(img, CV_LOAD_IMAGE_GRAYSCALE);
 
     int labelName = FacialUtils::labelFromName(FICHIER, name);
@@ -137,6 +140,7 @@ void FacialModule::onScoreRequest(Packet *p) {
     FacialUtils::loadFaceRecognizer(_faceRecognizer, FACERECO);
 
     vector<uint8> img(p->getData(), p->getData() + p->getBodySize());
+
     Mat m = imdecode(img, CV_LOAD_IMAGE_GRAYSCALE);
 
     //On recupère la prediction;
@@ -152,6 +156,10 @@ void FacialModule::onScoreRequest(Packet *p) {
 
     map<int, string> names = FacialUtils::reloadFromCSVFile(FICHIER);
 
-    if(predictedLabel != -1) score->push_back(Score(names[predictedLabel], confidence));
+    if(predictedLabel != -1) {
+        score->push_back(Score(names[predictedLabel], confidence));
+        //*this << INFO << names[predictedLabel] << confidence << endl;
+    }
+
     pReturn.setScoringVector(score)->doSend();
 }
