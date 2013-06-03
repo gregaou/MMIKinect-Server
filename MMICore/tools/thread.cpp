@@ -9,7 +9,7 @@ Thread::~Thread()
 {
 	pthread_mutex_lock(&d->mutex);
 	if (d->running && !d->finished)
-		*this << WARNING << "Thread: Destroyed while thread is still running" << std::endl;
+		*this << WARNING << "Destroyed while thread is still running" << std::endl;
 	pthread_mutex_unlock(&d->mutex);
 	delete d;
 }
@@ -37,7 +37,7 @@ void Thread::setStackSize(unsigned int stackSize)
 	pthread_mutex_lock(&d->mutex);
 	if (d->running)
 	{
-		*this << WARNING << "Thread: Cannot change stack size while thread is running!" << std::endl;
+		*this << WARNING << "Cannot change stack size while thread is running!" << std::endl;
 		pthread_mutex_unlock(&d->mutex);
 		return;
 	}
@@ -78,7 +78,7 @@ void Thread::start()
 
 	if (code)
 	{
-		*this << ERROR << "Thread::start: Thread creation error: " << code << std::endl;
+		*this << ERROR << "Thread creation error: " << code << std::endl;
 
 		d->running = false;
 		d->finished = false;
@@ -104,7 +104,7 @@ void Thread::terminate()
 	int code = pthread_cancel(d->thread_id);
 	if (code)
 	{
-		*this << ERROR << "Thread::start: Thread termination error: " << code << std::endl;
+		*this << ERROR << "Thread termination error: " << code << std::endl;
 	}
 	else
 	{
