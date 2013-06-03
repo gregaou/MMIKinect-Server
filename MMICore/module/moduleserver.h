@@ -4,6 +4,7 @@
 #include <string>
 #include <set>
 
+#include "tools/config.h"
 #include "tools/logger.h"
 
 class ModuleHandler;
@@ -21,9 +22,11 @@ public:
 	ModuleServer* onNewPacket (Packet* p);
 	ModuleServer* onAllThreadsDone (ModuleHandler* module);
 
-	ModuleServer* reload(std::string fromPath = "./lib/");
+	ModuleServer* reload(
+			std::string fromPath = Config::getInstance()->getParamValue("libPath"));
 private:
-	ModuleServer* load(std::string fromPath = "./lib/");
+	ModuleServer* load(
+			std::string fromPath = Config::getInstance()->getParamValue("libPath"));
 	std::set<ModuleHandler*>* getModuleHandlers();
 
 	static ModuleServer* _instance;

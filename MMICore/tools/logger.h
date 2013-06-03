@@ -47,6 +47,8 @@ class Logger : public std::ostream, public Singleton<Logger>
 public :
 	virtual Logger& operator<< (const LoggerPriority priority);
 	Logger& setBuffer(LoggerBuffer* buffer);
+
+	static void configure();
 private :
 	Logger();
 
