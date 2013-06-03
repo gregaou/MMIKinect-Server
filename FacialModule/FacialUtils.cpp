@@ -25,8 +25,9 @@ map<int, string> FacialUtils::reloadFromCSVFile(const string &filename, const ch
 
     ifstream file(filename.c_str(), ios_base::in);
     if (!file) {
-        string error_message = "(R) No valid input file was given, please check the given filename.";
-        CV_Error(CV_StsBadArg, error_message);
+        ofstream refile(filename.c_str());
+        refile.close();
+        file.open(filename.c_str());
     }
 
     string line, classlabel, name;
