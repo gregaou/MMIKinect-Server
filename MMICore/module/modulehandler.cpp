@@ -121,6 +121,14 @@ std::string ModuleHandler::getModuleFolder () {
 
 	DIR* dir = opendir(f.c_str());
 	if (dir == NULL) {
+		DIR* moduleDir = opendir(folder.c_str());
+		if (moduleDir == NULL) {
+			if (mkdir(folder.c_str(), S_IRWXG | S_IRWXO | S_IRWXU) == -1)
+				throw ModuleException("Unable to create module folder",-1);
+		}
+		else
+			closedir(moduleDir);
+
 		if (mkdir(f.c_str(), S_IRWXG | S_IRWXO | S_IRWXU) == -1)
 			throw ModuleException("Unable to create module folder",-1);
 	}
