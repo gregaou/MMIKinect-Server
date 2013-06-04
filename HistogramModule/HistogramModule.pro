@@ -25,11 +25,8 @@ LIBS += ../libMMICore.a
 
 LIBS += -ldl
 
-INCLUDEPATH += /usr/include/opencv \
-							 /usr/include/opencv2 \
-							 /usr/include/opencv2/core
+CONFIG += link_pkgconfig
 
-LIBS += -L/usr/lib -lopencv_core -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_imgproc
-
+PKGCONFIG += opencv
 
 DESTDIR = ../lib/
